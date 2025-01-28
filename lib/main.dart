@@ -33,7 +33,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:test_project_github/bloc/featured_news_bloc.dart';
 import 'package:test_project_github/bloc/home_news_bloc.dart';
+import 'package:test_project_github/event/featured_news_event.dart';
+import 'package:test_project_github/repository/news_repository.dart';
 import 'package:test_project_github/ui_component/home_news_screen.dart';
 import 'package:test_project_github/category_provider.dart';
 import 'package:test_project_github/splash_screen.dart';
@@ -58,6 +61,15 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (_) => NewsBloc(),
         ),
+
+        // BlocProvider(create: (context) => FeaturedNewsBloc(repository: NewsRepository())),
+
+        BlocProvider(
+          create: (context) => TopNewsBloc(
+            repository: NewsRepository(),
+          )..add(FetchTopNewsEvent()),
+        ),
+
 
         ChangeNotifierProvider(create: (_) => AppProvider()),
         ChangeNotifierProvider(create: (_) => FontSizeController()),
