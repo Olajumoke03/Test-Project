@@ -14,3 +14,8 @@ class FetchNewsForCategory extends NewsEvent {
   @override
   List<Object> get props => [categoryId];
 }
+
+class FetchNewsByCategory extends NewsEvent {
+  final String categoryId;
+  FetchNewsByCategory(this.categoryId);
+}

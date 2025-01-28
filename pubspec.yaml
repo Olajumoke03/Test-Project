@@ -41,8 +41,31 @@ dependencies:
   bloc: ^7.2.1
   http: ^1.0.0
   equatable: ^2.0.5
-  dependencies:
-  connectivity_plus: ^6.0.0
+#  dependencies:
+#  connectivity_plus: ^6.0.0
+
+  timeago: ^3.6.0
+  onesignal_flutter: ^5.2.5
+  objectdb: ^1.2.1+1
+  path_provider: ^2.1.2
+  cached_network_image: ^3.2.3
+  flutter_html: ^3.0.0-alpha.6
+  pull_to_refresh: ^2.0.0
+  jiffy: ^6.1.0
+  in_app_update: ^4.2.2
+  mockito: ^5.4.2
+  build_runner: ^2.0.0
+  url_launcher: ^6.1.11
+  #  flutter_share: ^2.0.0
+  #  google_mobile_ads: ^2.4.0
+  webview_flutter: ^4.10.0
+  firebase_crashlytics: ^3.4.9
+  firebase_core: ^2.24.2
+  flutter_svg: ^2.0.9
+  firebase_analytics: ^10.8.0
+  app_tracking_transparency: ^2.0.5
+  google_fonts: ^6.2.1
+  shimmer: ^3.0.0
 
 
 dev_dependencies:

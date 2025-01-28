@@ -1,5 +1,4 @@
 
-
 class HomeNewsModel {
   int? id;
   String? date;
@@ -21,43 +20,63 @@ class HomeNewsModel {
   bool? sticky;
   String? template;
   String? format;
-  Meta? meta;
+  List<void>? meta;
   List<int>? categories;
   List<int>? tags;
-  String? featuredImageSrc;
-  String? ago;
-  String? commentCount;
+  String? yoastHead;
+  // YoastHeadJson? yoastHeadJson;
+  String? jetpackFeaturedMediaUrl;
   Links? lLinks;
+  String? xCategories;
+  String? xAuthor;
+  List<String>? articleSplit;
+  String? xFeaturedMediaLarge;
+  List<String>? categoriesString;
+  String? xTags;
+  String? xFeaturedMedia;
+  String? xFeaturedMediaMedium;
+  String? xFeaturedMediaOriginal;
+  String? xDate;
 
-  HomeNewsModel({
-    this.id,
-    this.date,
-    this.dateGmt,
-    this.guid,
-    this.modified,
-    this.modifiedGmt,
-    this.slug,
-    this.status,
-    this.type,
-    this.link,
-    this.title,
-    this.content,
-    this.excerpt,
-    this.author,
-    this.featuredMedia,
-    this.commentStatus,
-    this.pingStatus,
-    this.sticky,
-    this.template,
-    this.format,
-    this.meta,
-    this.categories,
-    this.tags,
-    this.featuredImageSrc,
-    this.ago,
-    this.commentCount,
-    this.lLinks,
-  });
+
+  HomeNewsModel(
+      {id,
+        date,
+        dateGmt,
+        guid,
+        modified,
+        modifiedGmt,
+        slug,
+        status,
+        type,
+        link,
+        title,
+        content,
+        excerpt,
+        author,
+        featuredMedia,
+        commentStatus,
+        pingStatus,
+        sticky,
+        template,
+        format,
+        meta,
+        categories,
+        tags,
+        yoastHead,
+        // yoastHeadJson,
+        jetpackFeaturedMediaUrl,
+        lLinks,
+        xCategories,
+        xAuthor,
+        articleSplit,
+        categoriesString,
+        xDate,
+        xFeaturedMedia,
+        xFeaturedMediaLarge,
+        xFeaturedMediaMedium,
+        xFeaturedMediaOriginal,
+        xTags});
 
   HomeNewsModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -80,13 +99,28 @@ class HomeNewsModel {
     sticky = json['sticky'];
     template = json['template'];
     format = json['format'];
-    meta = json['meta'] != null ? Meta.fromJson(json['meta']) : null;
-    categories = json['categories']?.cast<int>();
-    tags = json['tags']?.cast<int>();
-    featuredImageSrc = json['featured_image_src'];
-    ago = json['ago'];
-    commentCount = json['comment_count'];
+    xCategories = json['x_categories'];
+    xAuthor = json['x_author'];
+    articleSplit = json['content']['rendered'].replaceAll('<p','@#%!<p').split('@#%!');
+    categories = json['categories'].cast<int>();
+    tags = json['tags'].cast<int>();
+    yoastHead = json['yoast_head'];
+    // yoastHeadJson = json['yoast_head_json'] != null
+    //     ? YoastHeadJson.fromJson(json['yoast_head_json'])
+    //     : null;
+    jetpackFeaturedMediaUrl = json['jetpack_featured_media_url'];
     lLinks = json['_links'] != null ? Links.fromJson(json['_links']) : null;
+    featuredMedia = json['featured_media'];
+    categories = json['categories'].cast<int>();
+    categoriesString = json['x_categories'].split(',');
+    xCategories = json['x_categories'];
+    xTags = json['x_tags'];
+    xFeaturedMedia = json['x_featured_media'];
+    xFeaturedMediaMedium = json['x_featured_media_medium'];
+    xFeaturedMediaOriginal = json['x_featured_media_original'];
+    xFeaturedMediaLarge = json['x_featured_media_large'];
+    xDate = json['x_date'];
+    xAuthor = json['x_author'];
   }
 
   Map<String, dynamic> toJson() {
@@ -119,58 +153,38 @@ class HomeNewsModel {
     data['sticky'] = sticky;
     data['template'] = template;
     data['format'] = format;
-    if (meta != null) {
-      data['meta'] = meta!.toJson();
-    }
     data['categories'] = categories;
+    data['x_author'] = xAuthor;
+    data['x_categories'] = xCategories;
     data['tags'] = tags;
-    data['featured_image_src'] = featuredImageSrc;
-    data['ago'] = ago;
-    data['comment_count'] = commentCount;
+    data['yoast_head'] = yoastHead;
+    // if (yoastHeadJson != null) {
+    //   data['yoast_head_json'] = yoastHeadJson!.toJson();
+    // }
+    data['jetpack_featured_media_url'] = jetpackFeaturedMediaUrl;
     if (lLinks != null) {
       data['_links'] = lLinks!.toJson();
     }
-    return data;
-  }
 
-  @override
-  String toString() {
-    return {
-      'id': id,
-      'date': date,
-      'date_gmt': dateGmt,
-      'guid': {'rendered': guid?.rendered},
-      'modified': modified,
-      'modified_gmt': modifiedGmt,
-      'slug': slug,
-      'status': status,
-      'type': type,
-      'link': link,
-      'title': {'rendered': title?.rendered},
-      'content': {'rendered': content?.rendered},
-      'excerpt': {'rendered': excerpt?.rendered},
-      'author': author,
-      'featured_media': featuredMedia,
-      'comment_status': commentStatus,
-      'ping_status': pingStatus,
-      'sticky': sticky,
-      'template': template,
-      'format': format,
-      'meta': meta?.toJson(),
-      'categories': categories,
-      'tags': tags,
-      'featured_image_src': featuredImageSrc,
-      'ago': ago,
-      'comment_count': commentCount,
-      '_links': lLinks?.toJson()
-    }.toString();
+    data['author'] = author;
+    data['featured_media'] = featuredMedia;
+    data['categories'] = categories;
+    data['x_categories'] = xCategories;
+    data['x_tags'] = xTags;
+    data['x_featured_media'] = xFeaturedMedia;
+    data['x_featured_media_medium'] = xFeaturedMediaMedium;
+    data['x_featured_media_original'] = xFeaturedMediaOriginal;
+    data['x_featured_media_large'] = xFeaturedMediaLarge;
+    data['x_date'] = xDate;
+    data['x_author'] = xAuthor;
+    return data;
   }
 }
 
 class Guid {
   String? rendered;
 
-  Guid({this.rendered});
+  Guid({rendered});
 
   Guid.fromJson(Map<String, dynamic> json) {
     rendered = json['rendered'];
@@ -181,18 +195,13 @@ class Guid {
     data['rendered'] = rendered;
     return data;
   }
-
-  @override
-  String toString() {
-    return 'Guid{rendered: $rendered}';
-  }
 }
 
 class Content {
   String? rendered;
   bool? protected;
 
-  Content({this.rendered, this.protected});
+  Content({rendered, protected});
 
   Content.fromJson(Map<String, dynamic> json) {
     rendered = json['rendered'];
@@ -205,70 +214,501 @@ class Content {
     data['protected'] = protected;
     return data;
   }
-
-  @override
-  String toString() {
-    return 'Content{rendered: $rendered, protected: $protected}';
-  }
 }
 
-class Meta {
-  String? footnotes;
+class YoastHeadJson {
+  String? title;
+  String? description;
+  Robots? robots;
+  String? canonical;
+  String? ogLocale;
+  String? ogType;
+  String? ogTitle;
+  String? ogDescription;
+  String? ogUrl;
+  String? ogSiteName;
+  String? articlePublishedTime;
+  String? articleModifiedTime;
+  List<OgImage>? ogImage;
+  String? twitterCard;
+  TwitterMisc? twitterMisc;
+  Schema? schema;
 
-  Meta({this.footnotes});
+  YoastHeadJson(
+      {title,
+        description,
+        robots,
+        canonical,
+        ogLocale,
+        ogType,
+        ogTitle,
+        ogDescription,
+        ogUrl,
+        ogSiteName,
+        articlePublishedTime,
+        articleModifiedTime,
+        ogImage,
+        twitterCard,
+        twitterMisc,
+        schema});
 
-  Meta.fromJson(Map<String, dynamic> json) {
-    footnotes = json['footnotes'];
+  YoastHeadJson.fromJson(Map<String, dynamic> json) {
+    title = json['title'];
+    description = json['description'];
+    robots =
+    json['robots'] != null ? Robots.fromJson(json['robots']) : null;
+    canonical = json['canonical'];
+    ogLocale = json['og_locale'];
+    ogType = json['og_type'];
+    ogTitle = json['og_title'];
+    ogDescription = json['og_description'];
+    ogUrl = json['og_url'];
+    ogSiteName = json['og_site_name'];
+    articlePublishedTime = json['article_published_time'];
+    articleModifiedTime = json['article_modified_time'];
+    if (json['og_image'] != null) {
+      ogImage = <OgImage>[];
+      json['og_image'].forEach((v) {
+        ogImage!.add(OgImage.fromJson(v));
+      });
+    }
+    twitterCard = json['twitter_card'];
+    twitterMisc = json['twitter_misc'] != null
+        ? TwitterMisc.fromJson(json['twitter_misc'])
+        : null;
+    schema =
+    json['schema'] != null ? Schema.fromJson(json['schema']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['footnotes'] = footnotes;
+    data['title'] = title;
+    data['description'] = description;
+    if (robots != null) {
+      data['robots'] = robots!.toJson();
+    }
+    data['canonical'] = canonical;
+    data['og_locale'] = ogLocale;
+    data['og_type'] = ogType;
+    data['og_title'] = ogTitle;
+    data['og_description'] = ogDescription;
+    data['og_url'] = ogUrl;
+    data['og_site_name'] = ogSiteName;
+    data['article_published_time'] = articlePublishedTime;
+    data['article_modified_time'] = articleModifiedTime;
+    if (ogImage != null) {
+      data['og_image'] = ogImage!.map((v) => v.toJson()).toList();
+    }
+    data['twitter_card'] = twitterCard;
+    if (twitterMisc != null) {
+      data['twitter_misc'] = twitterMisc!.toJson();
+    }
+    if (schema != null) {
+      data['schema'] = schema!.toJson();
+    }
     return data;
   }
+}
 
-  @override
-  String toString() {
-    return 'Meta{footnotes: $footnotes}';
+class Robots {
+  String? index;
+  String? follow;
+  String? maxSnippet;
+  String? maxImagePreview;
+  String? maxVideoPreview;
+
+  Robots(
+      {index,
+        follow,
+        maxSnippet,
+        maxImagePreview,
+        maxVideoPreview});
+
+  Robots.fromJson(Map<String, dynamic> json) {
+    index = json['index'];
+    follow = json['follow'];
+    maxSnippet = json['max-snippet'];
+    maxImagePreview = json['max-image-preview'];
+    maxVideoPreview = json['max-video-preview'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['index'] = index;
+    data['follow'] = follow;
+    data['max-snippet'] = maxSnippet;
+    data['max-image-preview'] = maxImagePreview;
+    data['max-video-preview'] = maxVideoPreview;
+    return data;
+  }
+}
+
+class OgImage {
+  int? width;
+  int? height;
+  String? url;
+  String? type;
+
+  OgImage({width, height, url, type});
+
+  OgImage.fromJson(Map<String, dynamic> json) {
+    width = json['width'];
+    height = json['height'];
+    url = json['url'];
+    type = json['type'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['width'] = width;
+    data['height'] = height;
+    data['url'] = url;
+    data['type'] = type;
+    return data;
+  }
+}
+
+class TwitterMisc {
+  String? writtenBy;
+  String? estReadingTime;
+
+  TwitterMisc({writtenBy, estReadingTime});
+
+  TwitterMisc.fromJson(Map<String, dynamic> json) {
+    writtenBy = json['Written by'];
+    estReadingTime = json['Est. reading time'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['Written by'] = writtenBy;
+    data['Est. reading time'] = estReadingTime;
+    return data;
+  }
+}
+
+class Schema {
+  String? context;
+  List<Graph>? graph;
+
+  Schema({context, graph});
+
+  Schema.fromJson(Map<String, dynamic> json) {
+    context = json['@context'];
+    if (json['@graph'] != null) {
+      graph = <Graph>[];
+      json['@graph'].forEach((v) {
+        graph!.add(Graph.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['@context'] = context;
+    if (graph != null) {
+      data['@graph'] = graph!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Graph {
+  String? type;
+  String? id;
+  String? url;
+  String? name;
+  String? description;
+  List<PotentialAction>? potentialAction;
+  String? inLanguage;
+  String? contentUrl;
+  int? width;
+  int? height;
+  IsPartOf? isPartOf;
+  IsPartOf? primaryImageOfPage;
+  String? datePublished;
+  String? dateModified;
+  IsPartOf? author;
+  IsPartOf? breadcrumb;
+  List<ItemListElement>? itemListElement;
+  NewsImage? image;
+
+  Graph(
+      {type,
+        id,
+        url,
+        name,
+        description,
+        potentialAction,
+        inLanguage,
+        contentUrl,
+        width,
+        height,
+        isPartOf,
+        primaryImageOfPage,
+        datePublished,
+        dateModified,
+        author,
+        breadcrumb,
+        itemListElement,
+        image});
+
+  Graph.fromJson(Map<String, dynamic> json) {
+    type = json['@type'];
+    id = json['@id'];
+    url = json['url'];
+    name = json['name'];
+    description = json['description'];
+    if (json['potentialAction'] != null) {
+      potentialAction = <PotentialAction>[];
+      json['potentialAction'].forEach((v) {
+        potentialAction!.add(PotentialAction.fromJson(v));
+      });
+    }
+    inLanguage = json['inLanguage'];
+    contentUrl = json['contentUrl'];
+    width = json['width'];
+    height = json['height'];
+    isPartOf = json['isPartOf'] != null
+        ? IsPartOf.fromJson(json['isPartOf'])
+        : null;
+    primaryImageOfPage = json['primaryImageOfPage'] != null
+        ? IsPartOf.fromJson(json['primaryImageOfPage'])
+        : null;
+    datePublished = json['datePublished'];
+    dateModified = json['dateModified'];
+    author =
+    json['author'] != null ? IsPartOf.fromJson(json['author']) : null;
+    breadcrumb = json['breadcrumb'] != null
+        ? IsPartOf.fromJson(json['breadcrumb'])
+        : null;
+    if (json['itemListElement'] != null) {
+      itemListElement = <ItemListElement>[];
+      json['itemListElement'].forEach((v) {
+        itemListElement!.add(ItemListElement.fromJson(v));
+      });
+    }
+    image = json['image'] != null ? NewsImage.fromJson(json['image']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['@type'] = type;
+    data['@id'] = id;
+    data['url'] = url;
+    data['name'] = name;
+    data['description'] = description;
+    if (potentialAction != null) {
+      data['potentialAction'] =
+          potentialAction!.map((v) => v.toJson()).toList();
+    }
+    data['inLanguage'] = inLanguage;
+    data['contentUrl'] = contentUrl;
+    data['width'] = width;
+    data['height'] = height;
+    if (isPartOf != null) {
+      data['isPartOf'] = isPartOf!.toJson();
+    }
+    if (primaryImageOfPage != null) {
+      data['primaryImageOfPage'] = primaryImageOfPage!.toJson();
+    }
+    data['datePublished'] = datePublished;
+    data['dateModified'] = dateModified;
+    if (author != null) {
+      data['author'] = author!.toJson();
+    }
+    if (breadcrumb != null) {
+      data['breadcrumb'] = breadcrumb!.toJson();
+    }
+    if (itemListElement != null) {
+      data['itemListElement'] =
+          itemListElement!.map((v) => v.toJson()).toList();
+    }
+    if (image != null) {
+      data['image'] = image!.toJson();
+    }
+    return data;
+  }
+}
+
+class PotentialAction {
+  String? type;
+  Target? target;
+  String? queryInput;
+
+  PotentialAction({type, target, queryInput});
+
+  PotentialAction.fromJson(Map<String, dynamic> json) {
+    type = json['@type'];
+    target =
+    json['target'] != null ? Target.fromJson(json['target']) : null;
+    queryInput = json['query-input'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['@type'] = type;
+    if (target != null) {
+      data['target'] = target!.toJson();
+    }
+    data['query-input'] = queryInput;
+    return data;
+  }
+}
+
+class Target {
+  String? type;
+  String? urlTemplate;
+
+  Target({type, urlTemplate});
+
+  Target.fromJson(Map<String, dynamic> json) {
+    type = json['@type'];
+    urlTemplate = json['urlTemplate'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['@type'] = type;
+    data['urlTemplate'] = urlTemplate;
+    return data;
+  }
+}
+
+class IsPartOf {
+  String? id;
+
+  IsPartOf({id});
+
+  IsPartOf.fromJson(Map<String, dynamic> json) {
+    id = json['@id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['@id'] = id;
+    return data;
+  }
+}
+
+class ItemListElement {
+  String? type;
+  int? position;
+  String? name;
+  String? item;
+
+  ItemListElement({type, position, name, item});
+
+  ItemListElement.fromJson(Map<String, dynamic> json) {
+    type = json['@type'];
+    position = json['position'];
+    name = json['name'];
+    item = json['item'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['@type'] = type;
+    data['position'] = position;
+    data['name'] = name;
+    data['item'] = item;
+    return data;
+  }
+}
+
+class NewsImage {
+  String? type;
+  String? id;
+  String? inLanguage;
+  String? url;
+  String? contentUrl;
+  String? caption;
+
+  NewsImage(
+      {type,
+        id,
+        inLanguage,
+        url,
+        contentUrl,
+        caption});
+
+  NewsImage.fromJson(Map<String, dynamic> json) {
+    type = json['@type'];
+    id = json['@id'];
+    inLanguage = json['inLanguage'];
+    url = json['url'];
+    contentUrl = json['contentUrl'];
+    caption = json['caption'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['@type'] = type;
+    data['@id'] = id;
+    data['inLanguage'] = inLanguage;
+    data['url'] = url;
+    data['contentUrl'] = contentUrl;
+    data['caption'] = caption;
+    return data;
   }
 }
 
 class Links {
   List<Self>? self;
-  List<Collection>? collection;
-  List<About>? about;
   List<Author>? author;
-  List<Replies>? replies;
   List<VersionHistory>? versionHistory;
-  List<WpFeaturedmedia>? wpFeaturedmedia;
-  List<WpAttachment>? wpAttachment;
+  List<PredecessorVersion>? predecessorVersion;
   List<WpTerm>? wpTerm;
   List<Curies>? curies;
 
-  Links({
-    this.self,
-    this.collection,
-    this.about,
-    this.author,
-    this.replies,
-    this.versionHistory,
-    this.wpFeaturedmedia,
-    this.wpAttachment,
-    this.wpTerm,
-    this.curies,
-  });
+  Links(
+      {self,
+
+        author,
+        versionHistory,
+        predecessorVersion,
+        wpTerm,
+        curies});
 
   Links.fromJson(Map<String, dynamic> json) {
-    self = json['self']?.map<Self>((v) => Self.fromJson(v)).toList();
-    // collection = json['collection']?.map<Collection>((v) => Collection.fromJson(v)).toList();
-    // about = json['about']?.map<About>((v) => About.fromJson(v)).toList();
-    author = json['author']?.map<Author>((v) => Author.fromJson(v)).toList();
-    // replies = json['replies']?.map<Replies>((v) => Replies.fromJson(v)).toList();
-    versionHistory = json['version-history']?.map<VersionHistory>((v) => VersionHistory.fromJson(v)).toList();
-    // wpFeaturedmedia = json['wp:featuredmedia']?.map<WpFeaturedmedia>((v) => WpFeaturedmedia.fromJson(v)).toList();
-    // wpAttachment = json['wp:attachment']?.map<WpAttachment>((v) => WpAttachment.fromJson(v)).toList();
-    wpTerm = json['wp:term']?.map<WpTerm>((v) => WpTerm.fromJson(v)).toList();
-    curies = json['curies']?.map<Curies>((v) => Curies.fromJson(v)).toList();
+    if (json['self'] != null) {
+      self = <Self>[];
+      json['self'].forEach((v) {
+        self!.add(Self.fromJson(v));
+      });
+    }
+    if (json['author'] != null) {
+      author = <Author>[];
+      json['author'].forEach((v) {
+        author!.add(Author.fromJson(v));
+      });
+    }
+
+    if (json['version-history'] != null) {
+      versionHistory = <VersionHistory>[];
+      json['version-history'].forEach((v) {
+        versionHistory!.add(VersionHistory.fromJson(v));
+      });
+    }
+    if (json['predecessor-version'] != null) {
+      predecessorVersion = <PredecessorVersion>[];
+      json['predecessor-version'].forEach((v) {
+        predecessorVersion!.add(PredecessorVersion.fromJson(v));
+      });
+    }
+
+    if (json['wp:term'] != null) {
+      wpTerm = <WpTerm>[];
+      json['wp:term'].forEach((v) {
+        wpTerm!.add(WpTerm.fromJson(v));
+      });
+    }
+    if (json['curies'] != null) {
+      curies = <Curies>[];
+      json['curies'].forEach((v) {
+        curies!.add(Curies.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -276,27 +716,20 @@ class Links {
     if (self != null) {
       data['self'] = self!.map((v) => v.toJson()).toList();
     }
-    if (collection != null) {
-      data['collection'] = collection!.map((v) => v.toJson()).toList();
-    }
-    if (about != null) {
-      data['about'] = about!.map((v) => v.toJson()).toList();
-    }
+
     if (author != null) {
       data['author'] = author!.map((v) => v.toJson()).toList();
     }
-    if (replies != null) {
-      data['replies'] = replies!.map((v) => v.toJson()).toList();
-    }
+
     if (versionHistory != null) {
-      data['version-history'] = versionHistory!.map((v) => v.toJson()).toList();
+      data['version-history'] =
+          versionHistory!.map((v) => v.toJson()).toList();
     }
-    if (wpFeaturedmedia != null) {
-      data['wp:featuredmedia'] = wpFeaturedmedia!.map((v) => v.toJson()).toList();
+    if (predecessorVersion != null) {
+      data['predecessor-version'] =
+          predecessorVersion!.map((v) => v.toJson()).toList();
     }
-    if (wpAttachment != null) {
-      data['wp:attachment'] = wpAttachment!.map((v) => v.toJson()).toList();
-    }
+
     if (wpTerm != null) {
       data['wp:term'] = wpTerm!.map((v) => v.toJson()).toList();
     }
@@ -305,29 +738,12 @@ class Links {
     }
     return data;
   }
-
-  @override
-  String toString() {
-    return '''
-Links {
-  self: $self,
-  collection: $collection,
-  about: $about,
-  author: $author,
-  replies: $replies,
-  versionHistory: $versionHistory,
-  wpFeaturedmedia: $wpFeaturedmedia,
-  wpAttachment: $wpAttachment,
-  wpTerm: $wpTerm,
-  curies: $curies
-}''';
-  }
 }
 
 class Self {
   String? href;
 
-  Self({this.href});
+  Self({href});
 
   Self.fromJson(Map<String, dynamic> json) {
     href = json['href'];
@@ -338,38 +754,13 @@ class Self {
     data['href'] = href;
     return data;
   }
-
-  @override
-  String toString() {
-    return 'Self{href: $href}';
-  }
-}
-
-class Collection extends Self {
-  Collection({String? href}) : super(href: href);
-}
-
-class About extends Self {
-  About({String? href}) : super(href: href);
-}
-
-class Replies extends Author {
-  Replies({bool? embeddable, String? href}) : super(embeddable: embeddable, href: href);
-}
-
-class WpFeaturedmedia extends Author {
-  WpFeaturedmedia({bool? embeddable, String? href}) : super(embeddable: embeddable, href: href);
-}
-
-class WpAttachment extends Self {
-  WpAttachment({String? href}) : super(href: href);
 }
 
 class Author {
   bool? embeddable;
   String? href;
 
-  Author({this.embeddable, this.href});
+  Author({embeddable, href});
 
   Author.fromJson(Map<String, dynamic> json) {
     embeddable = json['embeddable'];
@@ -382,18 +773,13 @@ class Author {
     data['href'] = href;
     return data;
   }
-
-  @override
-  String toString() {
-    return 'Author{embeddable: $embeddable, href: $href}';
-  }
 }
 
 class VersionHistory {
   int? count;
   String? href;
 
-  VersionHistory({this.count, this.href});
+  VersionHistory({count, href});
 
   VersionHistory.fromJson(Map<String, dynamic> json) {
     count = json['count'];
@@ -406,10 +792,24 @@ class VersionHistory {
     data['href'] = href;
     return data;
   }
+}
 
-  @override
-  String toString() {
-    return 'VersionHistory{count: $count, href: $href}';
+class PredecessorVersion {
+  int? id;
+  String? href;
+
+  PredecessorVersion({id, href});
+
+  PredecessorVersion.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    href = json['href'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['href'] = href;
+    return data;
   }
 }
 
@@ -418,7 +818,7 @@ class WpTerm {
   bool? embeddable;
   String? href;
 
-  WpTerm({this.taxonomy, this.embeddable, this.href});
+  WpTerm({taxonomy, embeddable, href});
 
   WpTerm.fromJson(Map<String, dynamic> json) {
     taxonomy = json['taxonomy'];
@@ -433,11 +833,6 @@ class WpTerm {
     data['href'] = href;
     return data;
   }
-
-  @override
-  String toString() {
-    return 'WpTerm{taxonomy: $taxonomy, embeddable: $embeddable, href: $href}';
-  }
 }
 
 class Curies {
@@ -445,7 +840,7 @@ class Curies {
   String? href;
   bool? templated;
 
-  Curies({this.name, this.href, this.templated});
+  Curies({name, href, templated});
 
   Curies.fromJson(Map<String, dynamic> json) {
     name = json['name'];
@@ -459,10 +854,5 @@ class Curies {
     data['href'] = href;
     data['templated'] = templated;
     return data;
-  }
-
-  @override
-  String toString() {
-    return 'Curies{name: $name, href: $href, templated: $templated}';
   }
 }

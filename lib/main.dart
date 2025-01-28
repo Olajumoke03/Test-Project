@@ -38,7 +38,8 @@ import 'package:test_project_github/ui_component/home_news_screen.dart';
 import 'package:test_project_github/category_provider.dart';
 import 'package:test_project_github/splash_screen.dart';
 import 'package:test_project_github/category_selection_screen.dart';
-import 'package:test_project_github/home_screen.dart';
+import 'package:test_project_github/utility/app_provider.dart';
+import 'package:test_project_github/utility/font_controller.dart';
 
 void main() {
   runApp(MyApp());
@@ -57,6 +58,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (_) => NewsBloc(),
         ),
+
+        ChangeNotifierProvider(create: (_) => AppProvider()),
+        ChangeNotifierProvider(create: (_) => FontSizeController()),
       ],
       child: MaterialApp(
         title: 'Flutter App',
