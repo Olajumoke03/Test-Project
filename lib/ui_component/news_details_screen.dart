@@ -37,7 +37,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
-        title: Image.asset('assets/images/logo_box.png', width: 170, height: 50),
+        title: Image.asset('assets/images/guardian_logo.png', width: 170, height: 50),
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios_new_rounded, color: Theme.of(context).textTheme.bodyMedium!.color,),
           onPressed: () => Navigator.pop(context),

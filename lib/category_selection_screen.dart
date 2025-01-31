@@ -49,8 +49,12 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:test_project_github/category_provider.dart';
+import 'package:test_project_github/model/catgegory_model.dart';
+import 'package:test_project_github/utility/colors.dart';
+import 'package:test_project_github/widgets/category_hardcode.dart';
 
 
 class CategorySelectionScreen extends StatefulWidget {
@@ -65,7 +69,12 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
     // Fetch categories when the screen is initialized
     Future.delayed(Duration.zero, () {
       final categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
-      categoryProvider.fetchCategories(); // Load categories when the screen appears
+     //hardcoded version
+      categoryProvider.fetchCategories(hardcodedData: HardcodedCategories.getCategories());
+
+
+      //// this is to fetch categories from backend
+      // categoryProvider.fetchCategories(); // Load categories when the screen appears
     });
   }
 
@@ -76,16 +85,28 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
     // If categories are empty or still loading, show loading indicator
     if (categoryProvider.categories.isEmpty) {
       return Scaffold(
-        appBar: AppBar(title: Text('Select Categories')),
+        appBar: AppBar(title: Text('Select Preferred Categories'),
+          surfaceTintColor: Colors.transparent,
+        ),
+
         body: Center(child: CircularProgressIndicator()),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text('Select Categories')),
+      appBar: AppBar(title: const Text('Select Preferred Categories'),
+        surfaceTintColor: Colors.transparent,
+      ),
       body: Column(
         children: [
-          Text('Please select at least 4 categories'),
+          Text(
+            'Please select at least four(4) categories',
+            style: GoogleFonts.montserrat(
+                fontSize: 18,
+                height: 3,
+                fontWeight: FontWeight.w500
+            ),
+          ),
           Expanded(
             child: ListView.builder(
               itemCount: categoryProvider.categories.length,
@@ -94,6 +115,14 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
                 return ListTile(
                   title: Text(category.categoryName ?? 'Unknown'),
                   leading: Checkbox(
+
+                    fillColor: MaterialStateProperty.all<Color>(mainColor),
+                    overlayColor: MaterialStateProperty.all<Color>(mainColor),
+                    hoverColor: mainColor,
+                    activeColor: mainColor,
+                    focusColor: mainColor,
+
+
                     value: categoryProvider.selectedCategories.contains(category.categoryId),
                     onChanged: (bool? value) {
                       if (value == true) {
@@ -115,10 +144,19 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
               Navigator.pushReplacementNamed(context, '/home');
             }
                 : null,
-            child: Text('Continue'),
+            child: Text('Continue',style: GoogleFonts.montserrat(
+                fontSize: 18,
+                height: 3,
+                fontWeight: FontWeight.w600,
+              color: mainColor
+            ), ),
           ),
+
+          SizedBox(height: 5.0)
         ],
       ),
     );
   }
 }
+
+

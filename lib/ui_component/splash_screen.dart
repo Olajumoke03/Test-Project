@@ -52,8 +52,9 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:provider/provider.dart';
-import 'category_provider.dart';
+import '../category_provider.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -61,6 +62,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+
   @override
   void initState() {
     super.initState();
@@ -69,6 +71,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   // Check if it's the first time user or if they've selected categories
   Future<void> _checkFirstTimeUser() async {
+    await Future.delayed(const Duration(seconds: 3)); // Splash duration
+
     final categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
 
     // Load preferences and navigate based on the status
@@ -82,15 +86,35 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
+
+
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Column(
+    return Scaffold(
+      body: Stack(
         children: [
-          FlutterLogo(),
-          Text("Splash screen")
+          // Center the image
+          Center(
+            child: SizedBox(
+              width: 400.0,
+              height: 200.0,
+              child: Image.asset('assets/images/guardian_logo.png'),
+            ),
+          ),
+          // Align the date text at the bottom
+          Positioned(
+            bottom: 20.0, // Set distance from the bottom
+            left: 0,
+            right: 0,
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(Jiffy.parseFromDateTime(DateTime.now()).yMMMMEEEEd,
+                    style: TextStyle(fontSize: 16.0),
+              ),
+            ),
+          ),
         ],
-      )),
+      ),
     );
   }
 }

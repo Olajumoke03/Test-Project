@@ -484,7 +484,7 @@ import 'package:test_project_github/event/featured_news_event.dart';
 import 'package:test_project_github/event/home_news_event.dart';
 import 'package:test_project_github/model/catgegory_model.dart';
 import 'package:test_project_github/model/home_news_model.dart';
-import 'package:test_project_github/settings_screen.dart';
+import 'package:test_project_github/ui_component/settings_screen.dart';
 import 'package:test_project_github/state/featured_news_state.dart';
 import 'package:test_project_github/state/home_news_state.dart';
 import 'package:test_project_github/ui_component/news_by_category.dart';
@@ -546,7 +546,7 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
       child: Scaffold(
         appBar: AppBar(
           surfaceTintColor: Colors.transparent,
-          title: Image.asset('assets/images/logo_box.png', width: 170, height: 50),
+          title: Image.asset('assets/images/guardian_logo.png', width: 170, height: 50),
           actions: [
             IconButton(
               onPressed: () {
@@ -865,9 +865,20 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
                 child: Column(
                   children: [
                     TabBar(
+                      // indicatorSize: TabBarIndicatorSize.tab,
+                      // isScrollable: true,
+                      // tabAlignment: TabAlignment.start,
+                      // dividerColor: Colors.transparent,
+                      tabAlignment: TabAlignment.start,
+                      dividerColor: Colors.transparent,
                       indicatorSize: TabBarIndicatorSize.tab,
                       isScrollable: true,
-                      tabAlignment: TabAlignment.start,
+                      labelPadding: const EdgeInsets.symmetric(horizontal: 9, vertical: 0),
+                      indicator: BoxDecoration(
+                        color: mainColor.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+
                       tabs: categoryProvider.selectedCategories.map((categoryId) {
                         final category = categoryProvider.categories.firstWhere(
                               (cat) => cat.categoryId == categoryId,
@@ -876,8 +887,14 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
                             categoryName: 'Loading...',
                           ),
                         );
-                        return Tab(
-                          text: category.categoryName ?? 'Loading...',
+                        return Row(
+                          children: [
+                     Image.asset("assets/images/marie_claire-logo.png", height: 200),
+
+                            Tab(
+                              text: category.categoryName ?? 'Loading...',
+                            ),
+                          ],
                         );
                       }).toList(),
                     ),

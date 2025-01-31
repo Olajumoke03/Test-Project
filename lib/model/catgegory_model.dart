@@ -2,7 +2,7 @@ class CategoryListModel {
   String? categoryName;
   String? categoryId;
 
-  CategoryListModel({this.categoryName, this.categoryId});
+  CategoryListModel({this.categoryName, this.categoryId,});
 
   CategoryListModel.fromJson(Map<String, dynamic> json) {
     categoryName = json['title'];

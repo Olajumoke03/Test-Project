@@ -1,50 +1,23 @@
-// import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-// import 'package:test_project_github/ui_component/home_news_screen.dart';
-// import 'category_provider.dart';
-// import 'splash_screen.dart';
-// import 'category_selection_screen.dart';
-// import 'home_screen.dart';
-//
-// void main() {
-//   runApp(MyApp());
-// }
-//
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return ChangeNotifierProvider(
-//       create: (_) => CategoryProvider(),
-//       child: MaterialApp(
-//         title: 'Flutter App',
-//         debugShowCheckedModeBanner: false,
-//         initialRoute: '/',
-//         routes: {
-//           '/': (context) => SplashScreen(),
-//           '/select-categories': (context) => CategorySelectionScreen(),
-//           '/home': (context) => HomeScreen(),
-//         },
-//       ),
-//     );
-//   }
-// }
-
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_project_github/bloc/featured_news_bloc.dart';
 import 'package:test_project_github/bloc/home_news_bloc.dart';
 import 'package:test_project_github/event/featured_news_event.dart';
 import 'package:test_project_github/repository/news_repository.dart';
 import 'package:test_project_github/ui_component/home_news_screen.dart';
 import 'package:test_project_github/category_provider.dart';
-import 'package:test_project_github/splash_screen.dart';
+import 'package:test_project_github/ui_component/home_page.dart';
+import 'package:test_project_github/ui_component/splash_screen.dart';
 import 'package:test_project_github/category_selection_screen.dart';
 import 'package:test_project_github/utility/app_provider.dart';
 import 'package:test_project_github/utility/font_controller.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();  // Add this line
+  await SharedPreferences.getInstance();
   runApp(MyApp());
 }
 
@@ -62,31 +35,37 @@ class MyApp extends StatelessWidget {
           create: (_) => NewsBloc(),
         ),
 
-        // BlocProvider(create: (context) => FeaturedNewsBloc(repository: NewsRepository())),
-
         BlocProvider(
           create: (context) => TopNewsBloc(
             repository: NewsRepository(),
           )..add(FetchTopNewsEvent()),
         ),
 
-
         ChangeNotifierProvider(create: (_) => AppProvider()),
         ChangeNotifierProvider(create: (_) => FontSizeController()),
       ],
-      child: MaterialApp(
-        title: 'Flutter App',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        initialRoute: '/',
-        routes: {
-          '/': (context) => SplashScreen(),
-          '/select-categories': (context) => CategorySelectionScreen(),
-          '/home': (context) => HomeNewsScreen(),
-        },
+      child: Consumer<AppProvider>(
+        builder: (context,  appProvider,  child) {
+          return MaterialApp(
+            title: 'Flutter App',
+            debugShowCheckedModeBanner: false,
+            theme: appProvider.theme,
+
+            // theme: ThemeData(
+            //   primarySwatch: Colors.blue,
+            //   visualDensity: VisualDensity.adaptivePlatformDensity,
+            //
+            // ),
+            initialRoute: '/',
+            routes: {
+              '/': (context) => SplashScreen(),
+              '/select-categories': (context) => CategorySelectionScreen(),
+              // '/home': (context) => MainNavigationScreen(),
+              // '/home': (context) => HomeNewsScreen(),
+              '/home': (context) => MainNavigationScreen(),
+            },
+          );
+        }
       ),
     );
   }
