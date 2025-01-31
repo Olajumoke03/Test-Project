@@ -887,14 +887,8 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
                             categoryName: 'Loading...',
                           ),
                         );
-                        return Row(
-                          children: [
-                     Image.asset("assets/images/marie_claire-logo.png", height: 200),
-
-                            Tab(
-                              text: category.categoryName ?? 'Loading...',
-                            ),
-                          ],
+                        return Tab(
+                          text: category.categoryName ?? 'Loading...',
                         );
                       }).toList(),
                     ),

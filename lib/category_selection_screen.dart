@@ -54,7 +54,7 @@ import 'package:provider/provider.dart';
 import 'package:test_project_github/category_provider.dart';
 import 'package:test_project_github/model/catgegory_model.dart';
 import 'package:test_project_github/utility/colors.dart';
-import 'package:test_project_github/widgets/category_hardcode.dart';
+import 'package:test_project_github/category_hardcode.dart';
 
 
 class CategorySelectionScreen extends StatefulWidget {
@@ -69,12 +69,10 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
     // Fetch categories when the screen is initialized
     Future.delayed(Duration.zero, () {
       final categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
-     //hardcoded version
-      categoryProvider.fetchCategories(hardcodedData: HardcodedCategories.getCategories());
 
 
       //// this is to fetch categories from backend
-      // categoryProvider.fetchCategories(); // Load categories when the screen appears
+      categoryProvider.fetchCategories(); // Load categories when the screen appears
     });
   }
 

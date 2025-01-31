@@ -79,7 +79,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:test_project_github/model/catgegory_model.dart';
-import 'package:test_project_github/widgets/category_hardcode.dart';
+import 'package:test_project_github/category_hardcode.dart';
 
 class CategoryProvider with ChangeNotifier {
   List<CategoryListModel> _categories = [];
@@ -87,7 +87,9 @@ class CategoryProvider with ChangeNotifier {
   bool _isFirstTimeUser = true;
 
   List<CategoryListModel> get categories => _categories;
+
   List<String> get selectedCategories => _selectedCategories;
+
   bool get isFirstTimeUser => _isFirstTimeUser;
 
 
@@ -97,50 +99,30 @@ class CategoryProvider with ChangeNotifier {
     print('Selected category IDs: $_selectedCategories');
     print('Categories mapping: ');
     for (var category in _categories) {
-      print('category ID: ${category.categoryId}, category Name: ${category.categoryName}');
+      print('category ID: ${category.categoryId}, category Name: ${category
+          .categoryName}');
     }
   }
 
-  // // Load categories from API
-  // Update your fetchCategories method to include debugging:
-  // Future<void> fetchCategories() async {
-  //   try {
-  //     final response = await http.get(Uri.parse('https://punchng.com/category-payload/?v2'));
-  //     if (response.statusCode == 200) {
-  //       final List<dynamic> data = json.decode(response.body);
-  //       _categories = data.map((item) => CategoryListModel.fromJson(item)).toList();
-  //       debugCategoryState(); // Add this line
-  //       notifyListeners();
-  //     } else {
-  //       throw Exception('Failed to load categories');
-  //     }
-  //   } catch (e) {
-  //     print("Error loading categories: $e");
-  //   }
-  // }
-
-
-  ////hardcoded categories
-  Future<void> fetchCategories({List<Map<String, dynamic>>? hardcodedData}) async {
+  // Load categories from API
+  //Update your fetchCategories method to include debugging:
+  Future<void> fetchCategories() async {
     try {
-      List<dynamic> data;
-      if (hardcodedData != null) {
-        data = hardcodedData;
+      final response = await http.get(
+          Uri.parse('https://punchng.com/category-payload/?v2'));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        _categories =
+            data.map((item) => CategoryListModel.fromJson(item)).toList();
+        debugCategoryState(); // Add this line
+        notifyListeners();
       } else {
-        final response = await http.get(Uri.parse('https://punchng.com/category-payload/?v2'));
-        if (response.statusCode == 200) {
-          data = json.decode(response.body);
-        } else {
-          throw Exception('Failed to load categories');
-        }
+        throw Exception('Failed to load categories');
       }
-
-      _categories = data.map((item) => CategoryListModel.fromJson(item)).toList();
-      debugCategoryState();
-      notifyListeners();
     } catch (e) {
       print("Error loading categories: $e");
     }
+
   }
 
 
