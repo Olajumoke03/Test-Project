@@ -519,6 +519,8 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
 
   List<HomeNewsModel> allFeaturedNews =[];
 
+  int _selectedIndex = 0;
+
 
   @override
   void initState() {
@@ -859,27 +861,40 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
                 child: Column(
                   children: [
                     TabBar(
-                      // indicatorSize: TabBarIndicatorSize.tab,
-                      // isScrollable: true,
-                      // tabAlignment: TabAlignment.start,
-                      // dividerColor: Colors.transparent,
+                      onTap: (index) => setState(() => _selectedIndex = index),
+
                       tabAlignment: TabAlignment.start,
                       dividerColor: Colors.transparent,
                       indicatorSize: TabBarIndicatorSize.tab,
-                      isScrollable: true,
-                      labelPadding: const EdgeInsets.symmetric(horizontal: 9, vertical: 0),
-                      indicator: BoxDecoration(
-                        color: mainColor.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
+                      indicatorColor: Colors.transparent,
 
+                      isScrollable: true,
+                      padding: const EdgeInsets.only(left: 10.0),
+                      labelPadding: const EdgeInsets.symmetric(horizontal: 7,),
+                      labelColor: Colors.black,
+
+                      // indicator: BoxDecoration(
+                      //   color: _selectedIndex == true? Colors.red : mainColor,
+                      //   borderRadius: BorderRadius.circular(10),
+                      //   border: Border.all(color: Colors.black),
+                      // ),
 
                       tabs: [
+
                         // First tab with logo
                         Tab(
-                          child: Image.asset(
-                            "assets/images/marie_claire-logo.png",
-                            height: 50, width: 70, // Adjust height as needed
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 10.0,),
+
+                            decoration: BoxDecoration(
+                              color: Colors.green.withOpacity(0.2),
+                              border: Border.all(color: Colors.black),
+                              borderRadius: BorderRadius.circular(10.0)
+                            ),
+                            child: Image.asset(
+                              "assets/images/marie_claire-logo.png",
+                              height: 30, width: 70, // Adjust height as needed
+                            ),
                           ),
                         ),
                         // Remaining category tabs
@@ -891,11 +906,40 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
                               categoryName: 'Loading...',
                             ),
                           );
+
+                          final index = categoryProvider.selectedCategories.indexOf(categoryId) + 1;
+                          final isSelected = _selectedIndex == index;
+
                           return Tab(
-                            text: category.categoryName ?? 'Loading...',
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: isSelected ? mainColor.withOpacity(0.3): Colors.white,
+                                border: Border.all( color: isSelected? Colors.transparent: Colors.black),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  if (isSelected) Icon(Icons.check, size: 15),
+                                  SizedBox(width: isSelected ? 4 : 0),
+                                  Text(category.categoryName ?? 'Loading...'),
+                                ],
+                              ),
+                            ),
                           );
                         }).toList(),
-                      ],
+                      ]
+                      //     return Row(
+                      //       children: [
+                      //         Icon(Icons.check, size: 15,),
+                      //         Tab(
+                      //           text: category.categoryName ?? 'Loading...',
+                      //         ),
+                      //       ],
+                      //     );
+                      //   }).toList(),
+                      // ],
                     ),
 
                     //   tabs: categoryProvider.selectedCategories.map((categoryId) {
