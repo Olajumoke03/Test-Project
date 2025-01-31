@@ -1,474 +1,4 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:provider/provider.dart';
-// import 'package:test_project_github/bloc/home_news_bloc.dart';
-// import 'package:test_project_github/category_provider.dart';
-// import 'package:test_project_github/model/catgegory_model.dart';
-// import 'package:test_project_github/settings_screen.dart';
-// import 'package:test_project_github/state/home_news_state.dart';
-// import 'package:test_project_github/ui_component/news_by_category.dart';
-// import 'package:test_project_github/ui_component/notification_screen.dart';
-// import 'package:test_project_github/ui_component/search_screen.dart';
-//
-// import '../event/home_news_event.dart';
-//
-//
-// class HomeNewsScreen extends StatefulWidget {
-//   const HomeNewsScreen({super.key});
-//
-//   @override
-//   _HomeNewsScreenState createState() => _HomeNewsScreenState();
-// }
-//
-// class _HomeNewsScreenState extends State<HomeNewsScreen> {
-//
-//   final List<String> menuItems = [
-//     'News',
-//     'Opinion',
-//     'Lifestyle',
-//     'Sport',
-//     'Business',
-//     'Technology',
-//     'Woman',
-//     'Guardian Life',
-//     'Guardian Arts',
-//     'Newsletter'
-//   ];
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     // Fetch categories when the screen initializes
-//     Future.delayed(Duration.zero, () {
-//       final categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
-//       categoryProvider.fetchCategories();
-//     });
-//
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final categoryProvider = Provider.of<CategoryProvider>(context);
-//
-//     // // Show loading indicator while categories are being fetched
-//     // if (categoryProvider.categories.isEmpty) {
-//     //   return Scaffold(
-//     //     appBar: AppBar(title: const Text('Home')),
-//     //     body: const Center(child: CircularProgressIndicator()),
-//     //   );
-//     // }
-//
-//
-//
-//     return DefaultTabController(
-//       length: categoryProvider.selectedCategories.length,
-//       child: Scaffold(
-//         appBar: AppBar(
-//           title: Image.asset('assets/images/logo_box.png', width: 170, height: 50),
-//           actions: [
-//             IconButton(
-//               onPressed: () {
-//                 Navigator.push(
-//                   context,
-//                   MaterialPageRoute(builder: (context) => SettingsScreen()),
-//                 );
-//               },
-//               icon: const Icon(Icons.settings),
-//             ),
-//
-//             IconButton (
-//               onPressed: () {
-//                 Navigator.push( context, MaterialPageRoute(builder: (context)=>
-//                     const SearchScreen()
-//                   )
-//                 );
-//               } ,
-//               icon: Center(
-//                 child: Icon (
-//                     Icons.search , size: 25,
-//                     color: Theme.of(context).textTheme.bodyMedium!.color
-//                 ),
-//               ) ,
-//             ),
-//
-//
-//             IconButton (
-//               onPressed: () {
-//                 Navigator.push(context, MaterialPageRoute(builder: (context)=> const NotificationScreen()));
-//               } ,
-//               icon: Center(
-//                 child: Icon (
-//                     Icons.notifications_none_outlined , size: 25,
-//                     color: Theme.of(context).textTheme.bodyMedium!.color
-//                 ),
-//               ) ,
-//             ),
-//           ],
-//
-//           bottom: TabBar(
-//             indicatorSize: TabBarIndicatorSize.tab,
-//             isScrollable: true,
-//             tabAlignment: TabAlignment.start,
-//             tabs: categoryProvider.selectedCategories.map((categoryId) {
-//               // Find the category in the loaded categories list
-//               final category = categoryProvider.categories.firstWhere(
-//                     (cat) => cat.categoryId == categoryId,
-//                 orElse: () => CategoryListModel(
-//                   categoryId: categoryId,
-//                   categoryName: 'Loading...',
-//                 ),
-//               );
-//
-//               return Tab(
-//                 text: '${category.categoryName ?? 'Loading...'} ($categoryId)',
-//               );
-//             }).toList(),
-//           ),
-//         ),
-//
-//         drawer: Drawer(
-//           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-//           child: Column(
-//             // padding: EdgeInsets.zero,
-//             children: <Widget>[
-//               const SizedBox(height: 50,),
-//               Container(
-//                 height: 100,
-//                 child: Image.asset('assets/images/logo_box.png', width: 200, height: 70),
-//               ),
-//               ListView.builder(
-//                 padding: EdgeInsets.zero,
-//                 shrinkWrap: true,
-//                 itemCount: menuItems.length,
-//                 itemBuilder: (context, index) {
-//
-//                   return Column(
-//                     children: [
-//                       ListTile(
-//                         contentPadding: const EdgeInsets.symmetric(horizontal: 15.0),
-//                         minTileHeight: 10.0,
-//                         trailing: Icon(
-//                             Icons.keyboard_arrow_down_sharp,
-//                             color: Colors.grey[800]
-//                         ),
-//                         title: Text(
-//                           menuItems[index],
-//                           style: const TextStyle(
-//                             fontWeight: FontWeight.bold,
-//                             fontSize: 18,
-//                           ),
-//                         ),
-//                         onTap: () {
-//                           Navigator.push(
-//                             context,
-//                             MaterialPageRoute(
-//                               builder: (context) => NewsByCategoryScreen(
-//                                   title: menuItems[index]
-//                               ),
-//                             ),
-//                           );
-//                         },
-//                       ),
-//                       const Divider(
-//                         indent: 15.0,
-//                         endIndent: 15.0,
-//                         color: Colors.grey,
-//                       ),
-//                     ],
-//                   );
-//                 },
-//               ),
-//
-//
-//               // ListTile(
-//               //   contentPadding: const EdgeInsets.symmetric(horizontal: 15.0),
-//               //   minTileHeight: 10.0,
-//               //   trailing: Icon(Icons.keyboard_arrow_down_sharp, color: Colors.grey[800],),
-//               //   title: const Text('News',
-//               //     style: TextStyle(
-//               //       fontWeight: FontWeight.bold,
-//               //       fontSize: 18,
-//               //     ),
-//               //     // style: GoogleFonts.mont(
-//               //     //     fontWeight: FontWeight.bold,
-//               //     //     fontSize: 18)
-//               //   ),
-//               //   onTap: () {},
-//               // ),
-//               //
-//               // const Divider(indent: 15.0, endIndent: 15.0, color: Colors.grey,),
-//               //
-//               // ListTile(
-//               //   contentPadding: const EdgeInsets.symmetric(horizontal: 15.0),
-//               //   minTileHeight: 10.0,
-//               //   trailing: Icon(Icons.keyboard_arrow_down_sharp, color: Colors.grey[800],),
-//               //   title: const Text('Opinion',
-//               //     style: TextStyle(
-//               //       fontWeight: FontWeight.bold,
-//               //       fontSize: 18,
-//               //     ),
-//               //   ),
-//               //   onTap: () {},
-//               // ),
-//               //
-//               // const Divider(indent: 15.0, endIndent: 15.0, color: Colors.grey,),
-//               //
-//               // ListTile(
-//               //   contentPadding: const EdgeInsets.symmetric(horizontal: 15.0),
-//               //   minTileHeight: 10.0,
-//               //   trailing: Icon(Icons.keyboard_arrow_down_sharp, color: Colors.grey[800],),
-//               //   title: const Text('Lifestyle',
-//               //     style: TextStyle(
-//               //       fontWeight: FontWeight.bold,
-//               //       fontSize: 18,
-//               //     ),
-//               //   ),
-//               //   onTap: () {},
-//               // ),
-//               //
-//               // const Divider(indent: 15.0, endIndent: 15.0, color: Colors.grey,),
-//               // ListTile(
-//               //   contentPadding: const EdgeInsets.symmetric(horizontal: 15.0),
-//               //   minTileHeight: 10.0,
-//               //   trailing: Icon(Icons.keyboard_arrow_down_sharp, color: Colors.grey[800],),
-//               //   title: const Text('Sport',
-//               //     style: TextStyle(
-//               //       fontWeight: FontWeight.bold,
-//               //       fontSize: 18,
-//               //     ),
-//               //   ),
-//               //   onTap: () {},
-//               // ),
-//               //
-//               //
-//               // const Divider(indent: 15.0, endIndent: 15.0, color: Colors.grey,),
-//               // ListTile(
-//               //   contentPadding: const EdgeInsets.symmetric(horizontal: 15.0),
-//               //   minTileHeight: 10.0,
-//               //   trailing: Icon(Icons.keyboard_arrow_down_sharp, color: Colors.grey[800],),
-//               //   title: const Text('Business',
-//               //     style: TextStyle(
-//               //       fontWeight: FontWeight.bold,
-//               //       fontSize: 18,
-//               //     ),
-//               //   ),
-//               //   onTap: () {},
-//               // ),
-//               //
-//               // const Divider(indent: 15.0, endIndent: 15.0, color: Colors.grey,),
-//               //
-//               // ListTile(
-//               //   contentPadding: const EdgeInsets.symmetric(horizontal: 15.0),
-//               //   minTileHeight: 10.0,
-//               //   trailing: Icon(Icons.keyboard_arrow_down_sharp, color: Colors.grey[800],),
-//               //   title: const Text('Technology',
-//               //     style: TextStyle(
-//               //       fontWeight: FontWeight.bold,
-//               //       fontSize: 18,
-//               //     ),
-//               //   ),
-//               //   onTap: () {},
-//               // ),
-//               //
-//               // const Divider(indent: 15.0, endIndent: 15.0, color: Colors.grey,),
-//               //
-//               // ListTile(
-//               //   contentPadding: const EdgeInsets.symmetric(horizontal: 15.0),
-//               //   minTileHeight: 10.0,
-//               //   trailing: Icon(Icons.keyboard_arrow_down_sharp, color: Colors.grey[800],),
-//               //   title: const Text('Woman',
-//               //     style: TextStyle(
-//               //       fontWeight: FontWeight.bold,
-//               //       fontSize: 18,
-//               //     ),
-//               //   ),
-//               //   onTap: () {},
-//               // ),
-//               //
-//               // const Divider(indent: 15.0, endIndent: 15.0, color: Colors.grey,),
-//               // ListTile(
-//               //   contentPadding: const EdgeInsets.symmetric(horizontal: 15.0),
-//               //   minTileHeight: 10.0,
-//               //   trailing: Icon(Icons.keyboard_arrow_down_sharp, color: Colors.grey[800],),
-//               //   title: const Text('Guardian Life',
-//               //     style: TextStyle(
-//               //       fontWeight: FontWeight.bold,
-//               //       fontSize: 18,
-//               //     ),
-//               //   ),
-//               //   onTap: () {},
-//               // ),
-//               //
-//               // const Divider(indent: 15.0, endIndent: 15.0, color: Colors.grey,),
-//               // ListTile(
-//               //   contentPadding: const EdgeInsets.symmetric(horizontal: 15.0),
-//               //   minTileHeight: 10.0,
-//               //   trailing: Icon(Icons.keyboard_arrow_down_sharp, color: Colors.grey[800],),
-//               //   title: const Text('Guardian Arts',
-//               //     style: TextStyle(
-//               //       fontWeight: FontWeight.bold,
-//               //       fontSize: 18,
-//               //     ),
-//               //   ),
-//               //   onTap: () {},
-//               // ),
-//               //
-//               // const Divider(indent: 15.0, endIndent: 15.0, color: Colors.grey,),
-//               //
-//               // ListTile(
-//               //   contentPadding: const EdgeInsets.symmetric(horizontal: 15.0),
-//               //   minTileHeight: 10.0,
-//               //   trailing: Icon(Icons.keyboard_arrow_down_sharp, color: Colors.grey[800],),
-//               //   title: const Text('Newsletter',
-//               //     style: TextStyle(
-//               //       fontWeight: FontWeight.bold,
-//               //       fontSize: 18,
-//               //     ),
-//               //   ),
-//               //   onTap: () {},
-//               // ),
-//               //
-//               // const Divider(indent: 15.0, endIndent: 15.0, color: Colors.grey,),
-//
-//             ],
-//           ),
-//         ),
-//
-//
-//         body: TabBarView(
-//           children: categoryProvider.selectedCategories.map((categoryId) {
-//             return NewsListScreen(categoryId: categoryId);
-//           }).toList(),
-//         ),
-//       ),
-//     );
-//
-//
-//   }
-// }
-//
-//
-// // Modified NewsListScreen
-// class NewsListScreen extends StatefulWidget {
-//   final String categoryId;
-//
-//   const NewsListScreen({Key? key, required this.categoryId}) : super(key: key);
-//
-//   @override
-//   State<NewsListScreen> createState() => _NewsListScreenState();
-// }
-//
-// class _NewsListScreenState extends State<NewsListScreen> {
-//   @override
-//   void initState() {
-//     super.initState();
-//     _loadNews();
-//   }
-//
-//   void _loadNews() {
-//     context.read<NewsBloc>().add(FetchNewsForCategory(widget.categoryId));
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocBuilder<NewsBloc, NewsState>(
-//       builder: (context, state) {
-//         if (state is NewsLoading) {
-//           return const Center(child: CircularProgressIndicator());
-//         }
-//
-//         if (state is NewsError) {
-//           return Center(
-//             child: Column(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               children: [
-//                 Text(state.message),
-//                 const SizedBox(height: 16),
-//                 ElevatedButton(
-//                   onPressed: _loadNews,
-//                   child: const Text('Retry'),
-//                 ),
-//               ],
-//             ),
-//           );
-//         }
-//
-//         if (state is NewsEmpty) {
-//           return const Center(
-//             child: Text('No news available for this category'),
-//           );
-//         }
-//
-//         if (state is NewsLoaded) {
-//           return RefreshIndicator(
-//             onRefresh: () async => _loadNews(),
-//             child: ListView.builder(
-//               itemCount: state.news.length,
-//               itemBuilder: (context, index) {
-//                 final newsItem = state.news[index];
-//                 return Card(
-//                   margin: const EdgeInsets.all(8.0),
-//                   child: ListTile(
-//                     title: Text(
-//                       newsItem.title!.rendered!,
-//                       style: const TextStyle(fontWeight: FontWeight.bold),
-//                     ),
-//                     subtitle: Column(
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       children: [
-//                         const SizedBox(height: 4),
-//                         Text(newsItem.categoriesString![0]),
-//                       ],
-//                     ),
-//                   ),
-//                 );
-//               },
-//             ),
-//           );
-//         }
-//
-//         return const SizedBox();
-//       },
-//     );
-//   }
-// }
-//
-//
-// // class NewsListScreen extends StatelessWidget {
-// //   final String categoryId;
-// //
-// //   const NewsListScreen({Key? key, required this.categoryId}) : super(key: key);
-// //
-// //   @override
-// //   Widget build(BuildContext context) {
-// //     return BlocBuilder<NewsBloc, NewsState>(
-// //       builder: (context, state) {
-// //         if (state is NewsLoading) {
-// //           return const Center(child: CircularProgressIndicator());
-// //         }
-// //         if (state is NewsError) {
-// //           return Center(child: Text(state.message));
-// //         }
-// //         if (state is NewsLoaded) {
-// //           print("news list: " + state.news.length.toString());
-// //           return ListView.builder(
-// //             shrinkWrap: true,
-// //             physics: NeverScrollableScrollPhysics(),
-// //             itemCount: state.news.length,
-// //             itemBuilder: (context, index) {
-// //               final newsItem = state.news[index];
-// //               return ListTile(
-// //                 title: Text(newsItem.title!.rendered!),
-// //                 subtitle: Text(newsItem.date!),
-// //               );
-// //             },
-// //           );
-// //         }
-// //         return const SizedBox();
-// //       },
-// //     );
-// //   }
-// // }
+
 
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -481,12 +11,10 @@ import 'package:provider/provider.dart';
 import 'package:test_project_github/bloc/featured_news_bloc.dart';
 import 'package:test_project_github/bloc/home_news_bloc.dart';
 import 'package:test_project_github/category_provider.dart';
-import 'package:test_project_github/event/featured_news_event.dart';
 import 'package:test_project_github/event/home_news_event.dart';
 import 'package:test_project_github/model/catgegory_model.dart';
 import 'package:test_project_github/model/home_news_model.dart';
 import 'package:test_project_github/ui_component/dummy_news_details.dart';
-import 'package:test_project_github/ui_component/settings_screen.dart';
 import 'package:test_project_github/state/featured_news_state.dart';
 import 'package:test_project_github/state/home_news_state.dart';
 import 'package:test_project_github/ui_component/news_by_category.dart';
@@ -494,8 +22,6 @@ import 'package:test_project_github/ui_component/news_details_screen.dart';
 import 'package:test_project_github/ui_component/notification_screen.dart';
 import 'package:test_project_github/ui_component/search_screen.dart';
 import 'package:test_project_github/utility/colors.dart';
-import 'package:test_project_github/widgets/build_error_ui.dart';
-import 'package:test_project_github/widgets/build_loading_widget.dart';
 import 'package:html/parser.dart';
 
 class HomeNewsScreen extends StatefulWidget {
@@ -505,37 +31,53 @@ class HomeNewsScreen extends StatefulWidget {
   _HomeNewsScreenState createState() => _HomeNewsScreenState();
 }
 
-class _HomeNewsScreenState extends State<HomeNewsScreen> {
-  final List<String> menuItems = [
-    'News',
-    'Opinion',
-    'Lifestyle',
-    'Sport',
-    'Business',
-    'Technology',
-    'Woman',
-    'Guardian Life',
-    'Guardian Arts',
-    'Newsletter'
-  ];
+class _HomeNewsScreenState extends State<HomeNewsScreen> with SingleTickerProviderStateMixin {
 
-  List<HomeNewsModel> allFeaturedNews =[];
-
-  int _selectedIndex = 0;
+  TabController? _tabController;
 
 
   @override
+  @override
   void initState() {
     super.initState();
-    // Fetch categories when the screen initializes
     Future.delayed(Duration.zero, () {
       final categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
-      categoryProvider.loadPreferences(); // Load selected categories from SharedPreferences
-
-      // categoryProvider.fetchCategories();
+      categoryProvider.loadPreferences().then((_) {
+        setState(() {
+          _tabController = TabController(
+              length: categoryProvider.selectedCategories.length,
+              vsync: this,
+              initialIndex: 0
+          );
+        });
+      });
     });
-
   }
+
+  // void initState() {
+  //   super.initState();
+  //   // Fetch categories when the screen initializes
+  //   Future.delayed(Duration.zero, () {
+  //     final categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
+  //     // categoryProvider.loadPreferences(); // Load selected categories from SharedPreferences
+  //     // Initialize the controller here with the correct length
+  //     _tabController = TabController(
+  //         length: categoryProvider.loadPreferences().l,
+  //         vsync: this,
+  //         initialIndex: 0
+  //     );
+  //     // Listen for tab changes
+  //     _tabController!.addListener(() {
+  //       setState(() {});
+  //     });
+  //
+  //     //to fetch categories from endpoint
+  //     // categoryProvider.fetchCategories();
+  //   });
+  //
+  //
+  //
+  // }
 
   String _parseHtmlString(String? htmlString) {
     if (htmlString == null) return '';
@@ -598,41 +140,6 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
             //   },
             // ),
           ],
-        ),
-
-        drawer: Drawer(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          child: ListView(
-            children: [
-              SizedBox(height: 50),
-              Container(
-                height: 100,
-                child: Image.asset('assets/images/logo_box.png', width: 200, height: 70),
-              ),
-              ...menuItems.map((item) {
-                return Column(
-                  children: [
-                    ListTile(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 15.0),
-                      minVerticalPadding: 10.0,
-                      trailing: Icon(Icons.keyboard_arrow_down_sharp, color: Colors.grey[800]),
-                      title: Text(
-                        item,
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => NewsByCategoryScreen(title: item)),
-                        );
-                      },
-                    ),
-                    const Divider(indent: 15.0, endIndent: 15.0, color: Colors.grey),
-                  ],
-                );
-              }).toList(),
-            ],
-          ),
         ),
 
         body: SingleChildScrollView(
@@ -810,41 +317,6 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
                               ),
                             )
                         ),
-
-                        // ListView.builder(
-                        //   itemCount: state.news.length,
-                        //   scrollDirection: Axis.horizontal,
-                        //   itemBuilder: (context, index) {
-                        //     final newsItem = state.news[index];
-                        //     return Card(
-                        //       margin: const EdgeInsets.all(8),
-                        //       child: Stack(
-                        //         // crossAxisAlignment: CrossAxisAlignment.start,
-                        //         children: [
-                        //             Image.network(
-                        //               newsItem.xFeaturedMediaLarge!,
-                        //               height: 200,
-                        //               width: 200,
-                        //               fit: BoxFit.cover,
-                        //               errorBuilder: (context, error, stackTrace) {
-                        //                 return  Image.asset("assets/images/logo_box.png", height: 200);
-                        //               },
-                        //             ),
-                        //           Padding(
-                        //             padding: const EdgeInsets.symmetric(horizontal: 10),
-                        //             child: Text(
-                        //               _parseHtmlString(newsItem.title?.rendered ?? ''),
-                        //               style: Theme.of(context).textTheme.titleLarge,
-                        //               maxLines: 2,
-                        //               overflow: TextOverflow.ellipsis,
-                        //
-                        //             ),
-                        //           ),
-                        //         ],
-                        //       ),
-                        //     );
-                        //   },
-                        // ),
                       );
                     }
 
@@ -865,8 +337,7 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
                 child: Column(
                   children: [
                     TabBar(
-                      onTap: (index) => setState(() => _selectedIndex = index),
-
+                        controller: _tabController,
                       tabAlignment: TabAlignment.start,
                       dividerColor: Colors.transparent,
                       indicatorSize: TabBarIndicatorSize.tab,
@@ -876,30 +347,8 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
                       padding: const EdgeInsets.only(left: 10.0),
                       labelPadding: const EdgeInsets.symmetric(horizontal: 7,),
                       labelColor: Colors.black,
-                        // indicator: BoxDecoration(
-                      //   color: _selectedIndex == true? Colors.red : mainColor,
-                      //   borderRadius: BorderRadius.circular(10),
-                      //   border: Border.all(color: Colors.black),
-                      // ),
 
                       tabs: [
-                        // First tab with logo
-                        Tab(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 10.0,),
-
-                            decoration: BoxDecoration(
-                              color: Colors.green.withOpacity(0.2),
-                              border: Border.all(color: Colors.black),
-                              borderRadius: BorderRadius.circular(10.0)
-                            ),
-                            child: Image.asset(
-                              "assets/images/marie_claire-logo.png",
-                              height: 30, width: 70, // Adjust height as needed
-                            ),
-                          ),
-                        ),
-                        // Remaining category tabs
                         ...categoryProvider.selectedCategories.map((categoryId) {
                           final category = categoryProvider.categories.firstWhere(
                                 (cat) => cat.categoryId == categoryId,
@@ -909,8 +358,8 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
                             ),
                           );
 
-                          final index = categoryProvider.selectedCategories.indexOf(categoryId) + 1;
-                          final isSelected = _selectedIndex == index;
+                          final index = categoryProvider.selectedCategories.indexOf(categoryId);
+                          final isSelected = _tabController!.index == index;
 
                           return Tab(
                             child: Container(
@@ -932,186 +381,20 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
                           );
                         }).toList(),
                       ]
-                      //     return Row(
-                      //       children: [
-                      //         Icon(Icons.check, size: 15,),
-                      //         Tab(
-                      //           text: category.categoryName ?? 'Loading...',
-                      //         ),
-                      //       ],
-                      //     );
-                      //   }).toList(),
-                      // ],
                     ),
-
-                    //   tabs: categoryProvider.selectedCategories.map((categoryId) {
-                    //     final category = categoryProvider.categories.firstWhere(
-                    //           (cat) => cat.categoryId == categoryId,
-                    //       orElse: () => CategoryListModel(
-                    //         categoryId: categoryId,
-                    //         categoryName: 'Loading...',
-                    //       ),
-                    //     );
-                    //     return Tab(
-                    //       text: category.categoryName ?? 'Loading...',
-                    //     );
-                    //   }).toList(),
-                    // ),
 
                     Expanded(
                       child: TabBarView(
+                        controller: _tabController!,
+
                         children: [
-                          // First child - your special news list for the logo tab
-                          //MARIE CLAIRE
-                          ListView.separated(
-                              padding: const EdgeInsets.symmetric(horizontal: 7,),
-                              scrollDirection: Axis.vertical,
-                              itemCount: 10,
-                              // itemCount: homeNewsModel.length,
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemBuilder: (ctx, pos) {
-                                return Column(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context).cardColor,
-                                        borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(10),
-                                          topRight: Radius.circular(10),
-                                        ),
-                                      ),
-                                      child: InkWell(
-                                        borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(10),
-                                          topRight: Radius.circular(10),
-                                        ),
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => const DummyNewsDetailScreen(
-                                                imageUrl: 'https://picsum.photos/150/150?random=',
-                                                title: 'Monarch population soars 4,900 percent since last year in thrilling 2021 western migration',
-                                                author: 'Andy Corbley',
-                                                timeAgo: '1hr ago',
-                                                comments: 8,
-                                                likes: 34,
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                        child: Row(
-                                          children: <Widget>[
-                                            Flexible(
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.max,
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: <Widget>[
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                    },
-                                                    child: Text(
-                                                      "ENTERTAINMENT",
-                                                      // homeNewsModel[pos].categoriesString![0].replaceAll("&amp;", "&"),
-                                                      style: GoogleFonts.montserrat(
-                                                        fontSize: 12,
-                                                        // fontSize: 4.5 * fontSizeController.value,
-                                                        color: mainColor,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Material(
-                                                    type: MaterialType.transparency,
-                                                    child:
-                                                    Text("LP chieftain urges peace as court affirms Abure's NWC peace as court",
-                                                      style: GoogleFonts.merriweather(
-                                                          color: Theme.of(context).textTheme.bodyMedium!.color,
-                                                          fontSize: 18,
-                                                          // fontSize: 7.5*fontSizeController.value,
-                                                          // fontSize: FontSize(15),
-                                                          fontWeight:FontWeight.w500
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(height: 10),
-                                                  Text('2 hours ago | 4 min read',
-                                                    style: GoogleFonts.montserrat(
-                                                      fontSize: 14,
-                                                      color: Colors.grey[600],
-                                                    ),
-                                                    // style: TextStyle(color: Colors.grey, fontSize: 13)
-                                                  ),
 
-                                                ],
-                                              ),
-                                            ),
-
-                                            const SizedBox(width: 10),
-
-                                            Card(
-
-                                              shape: const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(3),
-                                                ),
-                                              ),
-                                              elevation: 0,
-                                              child: ClipRRect(
-                                                borderRadius: const BorderRadius.all(Radius.circular(3)),
-                                                child: Hero(
-                                                  tag: pos,
-                                                  child: Image.asset('assets/images/image.jpg', height: 100, width: 100,),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-
-                                    Divider(color: Colors.grey[300],),
-                                  ],
-                                );
-                              },
-                              separatorBuilder: (context, index) {
-                                if (index % 5 == 0) {
-                                  return  Container(
-                                      height: 270,
-                                      margin: const EdgeInsets.only(top: 10.0) ,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text('Advertisement', style: TextStyle(color: Colors.grey[700]),),
-                                          // getAd(),
-                                        ],
-                                      ));
-                                } else {
-                                  return Container();
-                                }
-                              }
-                          ),
-
-                          // NewsListScreen(categoryId: 'special_logo_news'), // Use a specific identifier
-                          // Remaining category news lists
                           ...categoryProvider.selectedCategories.map((categoryId) =>
                               NewsListScreen(categoryId: categoryId)
                           ).toList(),
                         ],
                       ),
                     ),
-
-                    // Expanded(
-                    //   child: TabBarView(
-                    //     children:
-                    //     categoryProvider.selectedCategories.map((categoryId) {
-                    //       return NewsListScreen(categoryId: categoryId,);
-                    //     }).toList(),
-                    //
-                    //   ),
-                    // ),
 
                   ],
                 ),
@@ -1122,6 +405,13 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    _tabController?.dispose();
+    super.dispose();
+  }
+
 }
 
 
@@ -1346,29 +636,6 @@ class _NewsListScreenState extends State<NewsListScreen> {
                   }
                 }
             ),
-
-            // ListView.builder(
-            //   itemCount: state.news.length,
-            //   itemBuilder: (context, index) {
-            //     final newsItem = state.news[index];
-            //     return Row(
-            //       children: [
-            //         Column(
-            //           crossAxisAlignment: CrossAxisAlignment.start,
-            //           children: [
-            //             Text(
-            //               _parseHtmlString(newsItem.title?.rendered ?? ''),
-            //               style: const TextStyle(fontWeight: FontWeight.bold),
-            //             ),
-            //             const SizedBox(height: 4),
-            //             Text(newsItem.categoriesString![0]),
-            //           ],
-            //         ),
-            //
-            //       ],
-            //     );
-            //   },
-            // ),
           );
         }
 

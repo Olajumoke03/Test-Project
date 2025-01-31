@@ -372,36 +372,6 @@ class _MoreScreenState extends State<MoreScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                     child: Row(
                       children: [
-                        Text("Change of Name", style: TextStyle(
-                            color: Theme
-                                .of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .color,
-                            fontSize: 7 * fontScale.value,
-                            fontWeight: FontWeight.normal
-                         ),
-                        ),
-
-                        const Spacer(),
-
-                        Transform.rotate(
-                            angle: - pi /4,
-                            child: Icon(Icons.logout, color: Colors.grey[500], size: 20, )
-                        )
-                      ],
-                    ),
-                  ),
-
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Divider(color: Colors.grey[200],),
-                  ),
-
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                    child: Row(
-                      children: [
                         Text("Advertise with us", style: TextStyle(
                             color: Theme
                                 .of(context)

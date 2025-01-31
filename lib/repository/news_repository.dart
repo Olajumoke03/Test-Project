@@ -54,7 +54,7 @@ class NewsRepository {
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonData = json.decode(response.body);
-        print("Data data: " + response.body.toString());
+        // print("Data data: " + response.body.toString());
         return jsonData.map((json) => HomeNewsModel.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load news: ${response.statusCode}');

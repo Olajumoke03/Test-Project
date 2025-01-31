@@ -100,14 +100,13 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                           height: 70,
                           width: 250,
                           decoration: BoxDecoration(
-                            // color: const Color(0XFFECE6F0).withOpacity(0.8),
                               color: const Color(0XFFE5E7DC),
                               borderRadius: BorderRadius.circular(13.0)
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text("Entertainment", style: TextStyle(fontSize: 16, color: Color(0XFF373037),
+                             const Text("Entertainment", style: TextStyle(fontSize: 16, color: Color(0XFF373037),
                               ),
                               ),
                               const SizedBox(width: 5.0,),
