@@ -9,27 +9,12 @@ import 'package:test_project_github/utility/colors.dart';
 import 'package:test_project_github/utility/font_controller.dart';
 import 'package:test_project_github/utility/text_size_seekbar.dart';
 import 'package:test_project_github/widgets/custom_alert_dialog.dart';
+import 'package:html/parser.dart';
 
 class NewsDetailScreen extends StatefulWidget {
-  final String? imageUrl;
-  final String? title;
-  final String? author;
-  final String? timeAgo;
-  final int? comments;
-  final int? likes;
   final HomeNewsModel? newsModel;
 
-
-  const NewsDetailScreen({
-    super.key,
-     this.imageUrl,
-     this.title,
-     this.author,
-     this.timeAgo,
-     this.comments,
-     this.likes,
-    this.newsModel
-  });
+  const NewsDetailScreen({super.key, this.newsModel});
 
   @override
   State<NewsDetailScreen> createState() => _NewsDetailScreenState();
@@ -45,6 +30,12 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
           child:   const ChangeTextSizeWithSeekBar()
       ),
     );
+  }
+
+  String _parseHtmlString(String? htmlString) {
+    if (htmlString == null) return '';
+    final document = parse(htmlString);
+    return document.body?.text ?? '';
   }
 
   @override
@@ -88,7 +79,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                   GestureDetector(
                     onTap: () {},
                     child:  Text(
-                     widget.newsModel == null? "   NIGERIA" :  "  ${widget.newsModel!.categoriesString![0]}",
+                     "  ${widget.newsModel!.categoriesString![0]}",
                       style: GoogleFonts.montserrat(
                         fontSize: 13,
                         color: mainColor,
@@ -107,20 +98,30 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                   // ),
                   Material (
                       type: MaterialType.transparency ,
-                      child: Html(
-                        // data:  '${widget.newsModel!.title!.rendered}',
-                        data: widget.newsModel == null? 'LP Chieftain title: release report report report'
-                            : widget.newsModel!.title!.rendered!,
-                        style: {
-                          "body": Style(
-                              fontSize: FontSize(20.0),
-                              fontWeight: FontWeight.w500,
-                              color:Theme.of(context).textTheme.bodyLarge!.color,
-                              fontFamily: GoogleFonts.merriweather().fontFamily,
+                      child:
 
+                      Text(_parseHtmlString(widget.newsModel!.title!.rendered),
+                      style: GoogleFonts.merriweather(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w600,
+                        color:Theme.of(context).textTheme.bodyLarge!.color,
                       ),
-                        },
-                      )
+                      ),
+
+                      // Html(
+                      //   // data:  '${widget.newsModel!.title!.rendered}',
+                      //   data: widget.newsModel == null? 'LP Chieftain title: release report report report'
+                      //       : widget.newsModel!.title!.rendered!,
+                      //   style: {
+                      //     "body": Style(
+                      //         fontSize: FontSize(20.0),
+                      //         fontWeight: FontWeight.w500,
+                      //         color:Theme.of(context).textTheme.bodyLarge!.color,
+                      //         fontFamily: GoogleFonts.merriweather().fontFamily,
+                      //
+                      // ),
+                      //   },
+                      // )
                   ) ,
 
 
@@ -135,16 +136,14 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
 
                   Row(
                     children: [
-                      Text(
-                        widget.newsModel == null? '  Owede Agbajileke' : "  ${widget.newsModel!.xAuthor}",
+                      Text("  ${widget.newsModel!.xAuthor}",
                         style: GoogleFonts.montserrat(
                       fontSize: 14,
                       color: homePageBlue,
                     ),),
 
                     Text("  |  ", style: TextStyle(color: Colors.grey)),
-                      Text(  widget.newsModel == null? "2 hours ago" :
-                        Jiffy.parse('${widget.newsModel!.date}').fromNow()  ,
+                      Text(Jiffy.parse('${widget.newsModel!.date}').fromNow()  ,
                         style: GoogleFonts.montserrat(
                           fontSize: 14,
                           color: Colors.grey[600],
@@ -211,12 +210,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
 
                   Container(
                     child: ClipRRect(
-                      child:
-                      widget.newsModel == null?  Image.asset('assets/images/image.jpg',
-                        fit: BoxFit.cover,
-                          width: double.infinity,
-                          height: 280,)
-                      : CachedNetworkImage(
+                      child:CachedNetworkImage(
                         imageUrl: widget.newsModel!.xFeaturedMediaLarge!,
                         placeholder: (context, url) => const SizedBox(
                             height: 125,
@@ -244,128 +238,29 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 20),
-
-
-                  // Padding(
-                  //   padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  //   child: Row(
-                  //     children: [
-                  //       const Icon(Icons.comment, size: 16),
-                  //       const SizedBox(width: 4),
-                  //       Text('$comments comments'),
-                  //       const SizedBox(width: 16),
-                  //       const Icon(Icons.favorite, size: 16),
-                  //       const SizedBox(width: 4),
-                  //       Text('$likes likes'),
-                  //       const SizedBox(width: 16),
-                  //       const Icon(Icons.share, size: 16),
-                  //       const SizedBox(width: 4),
-                  //       const Text('Share'),
-                  //     ],
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 16),
-
-
-                  // Material (
-                  //     type: MaterialType.transparency ,
-                  //     child: Html(
-                  //       data:  '${widget.newsModel!.content!.rendered}',
-                  //       style: {
-                  //         "body": Style(
-                  //             fontSize: FontSize(18.0),
-                  //             fontWeight: FontWeight.w500,
-                  //             color:Theme.of(context).textTheme.bodyLarge!.color,
-                  //             fontFamily: GoogleFonts.dmSans().fontFamily,
-                  //
-                  //     ),
-                  //       },
-                  //     )
-                  // ) ,
-
-                  widget.newsModel == null? ListView(
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: [
-                      Text(
-                        'When just 200 Western monarch butterflies arrived in the Pismo Beach Butterfly Grove from their northerly migration last year, park rangers feared the treasured insect would soon be gone forever.',
-                        style: GoogleFonts.dmSans(
-                          fontSize: 18,
-                        ),                  ),
-                      const SizedBox(height: 16),
-                      Container(
-                          height: 270,
-                          margin: const EdgeInsets.only(top: 10.0) ,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(color: Colors.grey[200], height: 250, width: MediaQuery.of(context).size.width,
-                                child: Text('Advertisement', style: TextStyle(color: Colors.grey[700]),),
-                              ),
-                            ],
-                          )),
-                      const SizedBox(height: 16),
-                       Text(
-                        'This year, however, volunteers tallied their numbers at over 100,000, a spectacular swarm of hope that traveled down from as far north as Canada to spend the winter on the California coast.',
-                        style: GoogleFonts.dmSans(
-                          fontSize: 18,
-                        ),                  ),
-                      const SizedBox(height: 16),
-
-                      Text(
-                        "It's expected that the monarch butterfly will be...",
-                        style: GoogleFonts.dmSans(
-                          fontSize: 18,
-                        ),                  ),
-                       Text(
-                        'When just 200 Western monarch butterflies arrived in the Pismo Beach Butterfly Grove from their northerly migration last year, park rangers feared the treasured insect would soon be gone forever.',
-                        style: GoogleFonts.dmSans(
-                          fontSize: 18,
-                        ),                  ),
-                      const SizedBox(height: 16),
-                       Text(
-                        'This year, however, volunteers tallied their numbers at over 100,000, a spectacular swarm of hope that traveled down from as far north as Canada to spend the winter on the California coast.',
-                         style: GoogleFonts.dmSans(
-                           fontSize: 18,
-                         ),                  ),
-                      const Text(
-                        'When just 200 Western monarch butterflies arrived in the Pismo Beach Butterfly Grove from their northerly migration last year, park rangers feared the treasured insect would soon be gone forever.',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                       const SizedBox(height: 16),
-                       Text(
-                        'This year, however, volunteers tallied their numbers at over 100,000, a spectacular swarm of hope that traveled down from as far north as Canada to spend the winter on the California coast.',
-                        style: GoogleFonts.dmSans(
-                          fontSize: 18,
-                        ),                  ),
-                      const SizedBox(height: 16),
-                       Text(
-                        "It's expected that the monarch butterfly will be...",
-                         style: GoogleFonts.dmSans(
-                           fontSize: 18,
-                         ),                  ),
-                       const SizedBox(height: 16),
-                    ],
-                  )
-                      :
                   ListView.separated(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       scrollDirection: Axis.vertical,
                       itemCount: widget.newsModel!.articleSplit!.length,
                       itemBuilder: (BuildContext context , int index) {
-                        return Html (
-                          data: widget.newsModel!.articleSplit![index].toString(),
-                          style: {
-                            "body": Style(
-                                fontSize:  FontSize(10*_fontSizeController.value),
-                                fontWeight: FontWeight.w400,
-                                color:Theme.of(context).textTheme.bodyMedium!.color
-                            ),
-                          },
+                        return Text( _parseHtmlString(widget.newsModel!.articleSplit![index].toString()),
+                          style: GoogleFonts.dmSans(
+                            fontSize: 18,
+                          ),
                         );
+                        // Text(widget.newsModel!.articleSplit![index].toString());
+
+                        // Html (
+                        //   data: widget.newsModel!.articleSplit![index].toString(),
+                        //   style: {
+                        //     "body": Style(
+                        //         fontSize:  FontSize(10*_fontSizeController.value),
+                        //         fontWeight: FontWeight.w400,
+                        //         color:Theme.of(context).textTheme.bodyMedium!.color
+                        //     ),
+                        //   },
+                        // );
                       },
 
 

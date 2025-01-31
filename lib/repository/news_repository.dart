@@ -50,7 +50,7 @@ class NewsRepository {
   //for top stories
   Future<List<HomeNewsModel>> fetchTopNews() async {
     try {
-      final response = await http.get(Uri.parse('https://guardian.ng/wp-json/wp/v2/posts?per_page=20&page=1'));
+      final response = await http.get(Uri.parse('https://guardian.ng/wp-json/wp/v2/posts?per_page=30&page=1'));
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonData = json.decode(response.body);
@@ -60,7 +60,8 @@ class NewsRepository {
         throw Exception('Failed to load news: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('Error fetching news: $e');
+      throw Exception('Error fetching news, please try again');
+      // throw Exception('Error fetching news: $e');
     }
   }
 }

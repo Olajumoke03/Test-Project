@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:test_project_github/ui_component/dummy_news_details.dart';
 import 'package:test_project_github/ui_component/news_details_screen.dart';
 import 'package:test_project_github/ui_component/search_screen.dart';
 
@@ -81,7 +82,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const NewsDetailScreen(
+                          builder: (context) => const DummyNewsDetailScreen(
                             imageUrl: 'https://example.com/image.jpg',
                             title: 'Monarch population soars 4,900 percent since last year in thrilling 2021 western migration',
                             author: 'Andy Corbley',
@@ -155,7 +156,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const NewsDetailScreen(
+                          builder: (context) => const DummyNewsDetailScreen(
                             imageUrl: 'https://example.com/image.jpg',
                             title: 'Monarch population soars 4,900 percent since last year in thrilling 2021 western migration',
                             author: 'Andy Corbley',

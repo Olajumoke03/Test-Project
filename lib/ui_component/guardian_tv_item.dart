@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:test_project_github/ui_component/dummy_news_details.dart';
 import 'package:test_project_github/ui_component/news_by_category.dart';
 import 'package:test_project_github/ui_component/news_details_screen.dart';
 import 'package:test_project_github/utility/colors.dart';
@@ -74,7 +75,7 @@ class _GuardianTvItemState extends State<GuardianTvItem> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => NewsDetailScreen(
+                                builder: (context) => DummyNewsDetailScreen(
                                   imageUrl: 'https://picsum.photos/150/150?random=$index',
                                   title: 'Monarch population soars 4,900 percent since last year in thrilling 2021 western migration',
                                   author: 'Andy Corbley',
@@ -219,7 +220,7 @@ class _GuardianTvItemState extends State<GuardianTvItem> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => NewsDetailScreen(
+                        builder: (context) => DummyNewsDetailScreen(
                           imageUrl: 'https://picsum.photos/150/150?random=$index',
                           title: 'Monarch population soars 4,900 percent since last year in thrilling 2021 western migration',
                           author: 'Andy Corbley',

@@ -471,6 +471,7 @@
 // // }
 
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -484,6 +485,7 @@ import 'package:test_project_github/event/featured_news_event.dart';
 import 'package:test_project_github/event/home_news_event.dart';
 import 'package:test_project_github/model/catgegory_model.dart';
 import 'package:test_project_github/model/home_news_model.dart';
+import 'package:test_project_github/ui_component/dummy_news_details.dart';
 import 'package:test_project_github/ui_component/settings_screen.dart';
 import 'package:test_project_github/state/featured_news_state.dart';
 import 'package:test_project_github/state/home_news_state.dart';
@@ -681,7 +683,7 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
                     if (state is TopNewsLoadedState) {
                       return RefreshIndicator(
                         onRefresh: () async {
-                          context.read<TopNewsBloc>().add(RefreshTopNewsEvent());
+                          // context.read<TopNewsBloc>().add(RefreshTopNewsEvent());
                         },
                         child: ClipRRect(
                             borderRadius: const BorderRadius.all(Radius.circular(5.0)),
@@ -689,12 +691,12 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
                               onTap: (){},
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
-                                itemCount: 10,
+                                itemCount: state.news.length,
                                 itemBuilder: (context, index) {
                                 final newsItem = state.news[index];
                                   return GestureDetector(
                                     onTap: () {
-                                      HomeNewsModel fNM = state.news[0];
+                                      HomeNewsModel fNM = newsItem;
                                       Navigator.push(context, MaterialPageRoute(builder: (context)=>NewsDetailScreen(newsModel: fNM,)));
                                       },
                                     child: Stack(
@@ -728,10 +730,12 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
                                         ),
 
                                         Positioned(
-                                          // bottom: 0.0,
-                                          top: 118.0,
-                                          left: 0.0,
-                                          right: 0.0,
+                                          // // bottom: 0.0,
+                                          // top: 118.0,
+                                          // left: 0.0,
+                                          // right: 0.0,
+                                          bottom: 0.0, left: 0.0, right: 0.0,
+
                                           child: Container(
                                             margin: const EdgeInsets.only(left: 8.0, right: 0.0),
                                             decoration: BoxDecoration(
@@ -867,20 +871,18 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
                       dividerColor: Colors.transparent,
                       indicatorSize: TabBarIndicatorSize.tab,
                       indicatorColor: Colors.transparent,
-
+                      overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
                       isScrollable: true,
                       padding: const EdgeInsets.only(left: 10.0),
                       labelPadding: const EdgeInsets.symmetric(horizontal: 7,),
                       labelColor: Colors.black,
-
-                      // indicator: BoxDecoration(
+                        // indicator: BoxDecoration(
                       //   color: _selectedIndex == true? Colors.red : mainColor,
                       //   borderRadius: BorderRadius.circular(10),
                       //   border: Border.all(color: Colors.black),
                       // ),
 
                       tabs: [
-
                         // First tab with logo
                         Tab(
                           child: Container(
@@ -989,7 +991,7 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) => const NewsDetailScreen(
+                                              builder: (context) => const DummyNewsDetailScreen(
                                                 imageUrl: 'https://picsum.photos/150/150?random=',
                                                 title: 'Monarch population soars 4,900 percent since last year in thrilling 2021 western migration',
                                                 author: 'Andy Corbley',
@@ -1209,7 +1211,7 @@ class _NewsListScreenState extends State<NewsListScreen> {
                             topRight: Radius.circular(10),
                           ),
                           onTap: () {
-                            HomeNewsModel fNM = state.news[0];
+                            HomeNewsModel fNM = newsItem;
                             Navigator.push(context, MaterialPageRoute(builder: (context)=>NewsDetailScreen(newsModel: fNM,)));
 
                             // Navigator.push ( context ,
@@ -1245,8 +1247,8 @@ class _NewsListScreenState extends State<NewsListScreen> {
                                     GestureDetector(
                                       onTap: () { },
                                       child: Text(
-                                        "Nigeria",
-                                        // newsItem.categoriesString![0],
+                                        // "Nigeria",
+                                        newsItem.categoriesString![0],
                                         style: GoogleFonts.montserrat(
                                           fontSize: 12,
                                           color: mainColor,
@@ -1256,8 +1258,8 @@ class _NewsListScreenState extends State<NewsListScreen> {
                                     Material(
                                       type: MaterialType.transparency,
                                       child: Text(
-                                        "LP chieftain urges peace as court affirms Abure's NWC peace as court",
-                                        // _parseHtmlString(newsItem.title?.rendered ?? ''),
+                                        // "LP chieftain urges peace as court affirms Abure's NWC peace as court",
+                                        _parseHtmlString(newsItem.title?.rendered ?? ''),
                                         style: GoogleFonts.merriweather(
                                           fontWeight: FontWeight.w500,
                                           fontSize: 18,
@@ -1269,8 +1271,8 @@ class _NewsListScreenState extends State<NewsListScreen> {
                                     Row(
                                       children: [
                                         Text(
-                                          "2 hours ago" ,
-                                          // Jiffy.parse('${newsItem.date}').fromNow()  ,
+                                          // "2 hours ago" ,
+                                          Jiffy.parse('${newsItem.date}').fromNow()  ,
                                           style: GoogleFonts.montserrat(
                                             fontSize: 14,
                                             color: Colors.grey[600],
@@ -1299,7 +1301,23 @@ class _NewsListScreenState extends State<NewsListScreen> {
                                 elevation: 0,
                                 child: ClipRRect(
                                   borderRadius: const BorderRadius.all(Radius.circular(3)),
-                                  child: Image.asset('assets/images/image.jpg', height: 100, width: 100,),
+                                  child: CachedNetworkImage(
+                                    imageUrl: newsItem.xFeaturedMediaLarge!,
+                                    placeholder: (context, url) => const SizedBox(
+                                        height: 100, width: 100,
+                                        child: Center(
+                                            child: CircularProgressIndicator(
+                                                color: mainColor))),
+                                    errorWidget: (context, url, error) => Image.asset(
+                                      "assets/images/guardian_logo.png",
+                                      fit: BoxFit.contain,
+                                      // height: 100,
+                                      // width: 100,
+                                    ),
+                                    fit: BoxFit.cover,
+                                    height: 100, width: 100,
+                                  ),
+                                  // Image.asset('assets/images/image.jpg', height: 100, width: 100,),
                                 ),
                               ),
                             ],
