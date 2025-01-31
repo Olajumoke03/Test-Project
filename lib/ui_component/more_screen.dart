@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:test_project_github/ui_component/settings_screen.dart';
 import 'package:test_project_github/utility/colors.dart';
 import 'package:test_project_github/utility/font_controller.dart';
 import 'package:test_project_github/utility/theme_selector.dart';
@@ -329,6 +330,43 @@ class _MoreScreenState extends State<MoreScreen> {
                     child: Divider(color: Colors.grey[200],
                     ),
                   ),
+
+                  InkWell(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>SettingsScreen()));
+                    },
+
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+                      child: Row(
+                        children: [
+                          Text("Update Categories", style: TextStyle(
+                              color: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .color,
+                              fontSize: 7 * fontScale.value,
+                              fontWeight: FontWeight.normal
+                          ),
+                          ),
+
+                          const Spacer(),
+
+                          Transform.rotate(
+                              angle: - pi /4,
+                              child: Icon(Icons.logout, color: Colors.grey[500], size: 20, )
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Divider(color: Colors.grey[200],),
+                  ),
+
 
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),

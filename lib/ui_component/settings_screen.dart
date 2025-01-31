@@ -44,7 +44,9 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:test_project_github/utility/colors.dart';
 import '../category_provider.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -57,9 +59,10 @@ class SettingsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings'),
+        title: const Text('Update Categories'),
+        surfaceTintColor: Colors.transparent,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () async {
             // Check if selections have changed
             if (!_areListsEqual(initialSelection, categoryProvider.selectedCategories)) {
@@ -67,16 +70,16 @@ class SettingsScreen extends StatelessWidget {
               final shouldSave = await showDialog<bool>(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: Text('Save Changes?'),
-                  content: Text('Do you want to save your category changes?'),
+                  title: const Text('Save Changes?'),
+                  content: const Text('Do you want to save your category changes?'),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(context, false),
-                      child: Text('Discard'),
+                      child: const Text('Discard'),
                     ),
                     TextButton(
                       onPressed: () => Navigator.pop(context, true),
-                      child: Text('Save'),
+                      child: const Text('Save'),
                     ),
                   ],
                 ),
@@ -100,7 +103,10 @@ class SettingsScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Text(
               'Select or deselect categories',
-              style: Theme.of(context).textTheme.titleMedium,
+              style: GoogleFonts.montserrat(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
           Expanded(
@@ -111,10 +117,15 @@ class SettingsScreen extends StatelessWidget {
                 final isSelected = categoryProvider.selectedCategories.contains(category.categoryId);
 
                 return Card(
-                  margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                  margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                   child: ListTile(
                     title: Text(category.categoryName ?? ''),
                     trailing: Checkbox(
+                      fillColor: MaterialStateProperty.all<Color>(mainColor),
+                      overlayColor: MaterialStateProperty.all<Color>(mainColor),
+                      hoverColor: mainColor,
+                      activeColor: mainColor,
+                      focusColor: mainColor,
                       value: isSelected,
                       onChanged: (bool? value) {
                         if (value == true) {
@@ -125,7 +136,7 @@ class SettingsScreen extends StatelessWidget {
                             categoryProvider.deselectCategory(category.categoryId!);
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
+                              const SnackBar(
                                 content: Text('You must keep at least 4 categories selected'),
                                 duration: Duration(seconds: 2),
                               ),
@@ -142,6 +153,7 @@ class SettingsScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
+              style: ElevatedButton.styleFrom(overlayColor: mainColor),
               onPressed: () async {
                 if (categoryProvider.selectedCategories.length >= 4) {
                   await categoryProvider.saveSelectedCategories();
@@ -155,7 +167,13 @@ class SettingsScreen extends StatelessWidget {
                   );
                 }
               },
-              child: Text('Save Changes'),
+              child:  Text('Save Changes',
+                style: GoogleFonts.montserrat(
+                  fontSize: 18,
+                  height: 3,
+                  fontWeight: FontWeight.w600,
+                  color: mainColor,
+                ),),
             ),
           ),
         ],

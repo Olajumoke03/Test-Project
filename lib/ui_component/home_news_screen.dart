@@ -526,7 +526,9 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
     // Fetch categories when the screen initializes
     Future.delayed(Duration.zero, () {
       final categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
-      categoryProvider.fetchCategories();
+      categoryProvider.loadPreferences(); // Load selected categories from SharedPreferences
+
+      // categoryProvider.fetchCategories();
     });
 
   }
@@ -548,15 +550,15 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
           surfaceTintColor: Colors.transparent,
           title: Image.asset('assets/images/guardian_logo.png', width: 170, height: 50),
           actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SettingsScreen()),
-                );
-              },
-              icon: const Icon(Icons.settings),
-            ),
+            // IconButton(
+            //   onPressed: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(builder: (context) => SettingsScreen()),
+            //     );
+            //   },
+            //   icon: const Icon(Icons.settings),
+            // ),
             IconButton(
               onPressed: () {
                 Navigator.push(
@@ -585,12 +587,12 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
               ),
             ),
 
-            IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: () {
-                context.read<TopNewsBloc>().add(RefreshTopNewsEvent());
-              },
-            ),
+            // IconButton(
+            //   icon: const Icon(Icons.refresh),
+            //   onPressed: () {
+            //     context.read<TopNewsBloc>().add(RefreshTopNewsEvent());
+            //   },
+            // ),
           ],
         ),
 
@@ -667,7 +669,7 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
                     }
 
                     if (state is TopNewsLoadingState) {
-                      return const Center(child: CircularProgressIndicator());
+                      return const Center(child: CircularProgressIndicator(color: mainColor,));
                     }
 
                     if (state is TopNewsErrorState) {
@@ -690,20 +692,9 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
                                 final newsItem = state.news[index];
                                   return GestureDetector(
                                     onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => NewsDetailScreen(
-                                            imageUrl: 'https://picsum.photos/150/150?random=$index',
-                                            title: 'Monarch population soars 4,900 percent since last year in thrilling 2021 western migration',
-                                            author: 'Andy Corbley',
-                                            timeAgo: '1hr ago',
-                                            comments: 8,
-                                            likes: 34,
-                                          ),
-                                        ),
-                                      );
-                                    },
+                                      HomeNewsModel fNM = state.news[0];
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>NewsDetailScreen(newsModel: fNM,)));
+                                      },
                                     child: Stack(
                                       children: [
                                         Container(
@@ -777,6 +768,7 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
                                                 Padding(
                                                   padding: const EdgeInsets.symmetric(horizontal: 10),
                                                   child: Text(
+                                                    // "LP chieftain urges peace as court affirms Abure's NWC peace as court",
                                                     _parseHtmlString(newsItem.title?.rendered ?? ''),
                                                     style: GoogleFonts.merriweather(
                                                       fontSize: 22,
@@ -792,7 +784,9 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
                                                 Padding(
                                                   padding: const EdgeInsets.only(left: 10.0, bottom: 10.0 ),
                                                   child:
-                                                  Text(Jiffy.parse('${newsItem.date}').fromNow(),
+                                                  Text(
+                                                    // "2 hours ago",
+                                                    Jiffy.parse('${newsItem.date}').fromNow(),
                                                     style: GoogleFonts.montserrat(
                                                         fontSize: 15,
                                                         color: Colors.white
@@ -879,26 +873,200 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
                         borderRadius: BorderRadius.circular(5),
                       ),
 
-                      tabs: categoryProvider.selectedCategories.map((categoryId) {
-                        final category = categoryProvider.categories.firstWhere(
-                              (cat) => cat.categoryId == categoryId,
-                          orElse: () => CategoryListModel(
-                            categoryId: categoryId,
-                            categoryName: 'Loading...',
+
+                      tabs: [
+                        // First tab with logo
+                        Tab(
+                          child: Image.asset(
+                            "assets/images/marie_claire-logo.png",
+                            height: 50, width: 70, // Adjust height as needed
                           ),
-                        );
-                        return Tab(
-                          text: category.categoryName ?? 'Loading...',
-                        );
-                      }).toList(),
+                        ),
+                        // Remaining category tabs
+                        ...categoryProvider.selectedCategories.map((categoryId) {
+                          final category = categoryProvider.categories.firstWhere(
+                                (cat) => cat.categoryId == categoryId,
+                            orElse: () => CategoryListModel(
+                              categoryId: categoryId,
+                              categoryName: 'Loading...',
+                            ),
+                          );
+                          return Tab(
+                            text: category.categoryName ?? 'Loading...',
+                          );
+                        }).toList(),
+                      ],
                     ),
+
+                    //   tabs: categoryProvider.selectedCategories.map((categoryId) {
+                    //     final category = categoryProvider.categories.firstWhere(
+                    //           (cat) => cat.categoryId == categoryId,
+                    //       orElse: () => CategoryListModel(
+                    //         categoryId: categoryId,
+                    //         categoryName: 'Loading...',
+                    //       ),
+                    //     );
+                    //     return Tab(
+                    //       text: category.categoryName ?? 'Loading...',
+                    //     );
+                    //   }).toList(),
+                    // ),
+
                     Expanded(
                       child: TabBarView(
-                        children: categoryProvider.selectedCategories.map((categoryId) {
-                          return NewsListScreen(categoryId: categoryId);
-                        }).toList(),
+                        children: [
+                          // First child - your special news list for the logo tab
+                          //MARIE CLAIRE
+                          ListView.separated(
+                              padding: const EdgeInsets.symmetric(horizontal: 7,),
+                              scrollDirection: Axis.vertical,
+                              itemCount: 10,
+                              // itemCount: homeNewsModel.length,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (ctx, pos) {
+                                return Column(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).cardColor,
+                                        borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          topRight: Radius.circular(10),
+                                        ),
+                                      ),
+                                      child: InkWell(
+                                        borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          topRight: Radius.circular(10),
+                                        ),
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => const NewsDetailScreen(
+                                                imageUrl: 'https://picsum.photos/150/150?random=',
+                                                title: 'Monarch population soars 4,900 percent since last year in thrilling 2021 western migration',
+                                                author: 'Andy Corbley',
+                                                timeAgo: '1hr ago',
+                                                comments: 8,
+                                                likes: 34,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: Row(
+                                          children: <Widget>[
+                                            Flexible(
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.max,
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                    },
+                                                    child: Text(
+                                                      "ENTERTAINMENT",
+                                                      // homeNewsModel[pos].categoriesString![0].replaceAll("&amp;", "&"),
+                                                      style: GoogleFonts.montserrat(
+                                                        fontSize: 12,
+                                                        // fontSize: 4.5 * fontSizeController.value,
+                                                        color: mainColor,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Material(
+                                                    type: MaterialType.transparency,
+                                                    child:
+                                                    Text("LP chieftain urges peace as court affirms Abure's NWC peace as court",
+                                                      style: GoogleFonts.merriweather(
+                                                          color: Theme.of(context).textTheme.bodyMedium!.color,
+                                                          fontSize: 18,
+                                                          // fontSize: 7.5*fontSizeController.value,
+                                                          // fontSize: FontSize(15),
+                                                          fontWeight:FontWeight.w500
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 10),
+                                                  Text('2 hours ago | 4 min read',
+                                                    style: GoogleFonts.montserrat(
+                                                      fontSize: 14,
+                                                      color: Colors.grey[600],
+                                                    ),
+                                                    // style: TextStyle(color: Colors.grey, fontSize: 13)
+                                                  ),
+
+                                                ],
+                                              ),
+                                            ),
+
+                                            const SizedBox(width: 10),
+
+                                            Card(
+
+                                              shape: const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(3),
+                                                ),
+                                              ),
+                                              elevation: 0,
+                                              child: ClipRRect(
+                                                borderRadius: const BorderRadius.all(Radius.circular(3)),
+                                                child: Hero(
+                                                  tag: pos,
+                                                  child: Image.asset('assets/images/image.jpg', height: 100, width: 100,),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+
+                                    Divider(color: Colors.grey[300],),
+                                  ],
+                                );
+                              },
+                              separatorBuilder: (context, index) {
+                                if (index % 5 == 0) {
+                                  return  Container(
+                                      height: 270,
+                                      margin: const EdgeInsets.only(top: 10.0) ,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text('Advertisement', style: TextStyle(color: Colors.grey[700]),),
+                                          // getAd(),
+                                        ],
+                                      ));
+                                } else {
+                                  return Container();
+                                }
+                              }
+                          ),
+
+                          // NewsListScreen(categoryId: 'special_logo_news'), // Use a specific identifier
+                          // Remaining category news lists
+                          ...categoryProvider.selectedCategories.map((categoryId) =>
+                              NewsListScreen(categoryId: categoryId)
+                          ).toList(),
+                        ],
                       ),
                     ),
+
+                    // Expanded(
+                    //   child: TabBarView(
+                    //     children:
+                    //     categoryProvider.selectedCategories.map((categoryId) {
+                    //       return NewsListScreen(categoryId: categoryId,);
+                    //     }).toList(),
+                    //
+                    //   ),
+                    // ),
+
                   ],
                 ),
               ),
@@ -915,7 +1083,7 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> {
 class NewsListScreen extends StatefulWidget {
   final String categoryId;
 
-  const NewsListScreen({Key? key, required this.categoryId}) : super(key: key);
+  const NewsListScreen({Key? key, required this.categoryId, }) : super(key: key);
 
   @override
   State<NewsListScreen> createState() => _NewsListScreenState();
@@ -943,7 +1111,7 @@ class _NewsListScreenState extends State<NewsListScreen> {
     return BlocBuilder<NewsBloc, NewsState>(
       builder: (context, state) {
         if (state is NewsLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator(color: mainColor));
         }
 
         if (state is NewsError) {
@@ -997,19 +1165,30 @@ class _NewsListScreenState extends State<NewsListScreen> {
                             topRight: Radius.circular(10),
                           ),
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const NewsDetailScreen(
-                                  imageUrl: 'https://picsum.photos/150/150?random=',
-                                  title: 'Monarch population soars 4,900 percent since last year in thrilling 2021 western migration',
-                                  author: 'Andy Corbley',
-                                  timeAgo: '1hr ago',
-                                  comments: 8,
-                                  likes: 34,
-                                ),
-                              ),
-                            );
+                            HomeNewsModel fNM = state.news[0];
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>NewsDetailScreen(newsModel: fNM,)));
+
+                            // Navigator.push ( context ,
+                            //     MaterialPageRoute(
+                            //       builder: (context) =>  BlocProvider<NewsTagBloc> (
+                            //           create: (context) => NewsTagBloc (repository: NewsRepository ()) ,
+                            //           child: NewsDetails ( newsModel: fNM , )
+                            //       ) ,
+                            //     )
+                            // );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => const NewsDetailScreen(
+                            //       imageUrl: 'https://picsum.photos/150/150?random=',
+                            //       title: 'Monarch population soars 4,900 percent since last year in thrilling 2021 western migration',
+                            //       author: 'Andy Corbley',
+                            //       timeAgo: '1hr ago',
+                            //       comments: 8,
+                            //       likes: 34,
+                            //     ),
+                            //   ),
+                            // );
                           },
                           child: Row(
                             children: <Widget>[
@@ -1022,7 +1201,8 @@ class _NewsListScreenState extends State<NewsListScreen> {
                                     GestureDetector(
                                       onTap: () { },
                                       child: Text(
-                                        newsItem.categoriesString![0],
+                                        "Nigeria",
+                                        // newsItem.categoriesString![0],
                                         style: GoogleFonts.montserrat(
                                           fontSize: 12,
                                           color: mainColor,
@@ -1031,7 +1211,9 @@ class _NewsListScreenState extends State<NewsListScreen> {
                                     ),
                                     Material(
                                       type: MaterialType.transparency,
-                                      child: Text( _parseHtmlString(newsItem.title?.rendered ?? ''),
+                                      child: Text(
+                                        "LP chieftain urges peace as court affirms Abure's NWC peace as court",
+                                        // _parseHtmlString(newsItem.title?.rendered ?? ''),
                                         style: GoogleFonts.merriweather(
                                           fontWeight: FontWeight.w500,
                                           fontSize: 18,
@@ -1043,7 +1225,8 @@ class _NewsListScreenState extends State<NewsListScreen> {
                                     Row(
                                       children: [
                                         Text(
-                                          Jiffy.parse('${newsItem.date}').fromNow()  ,
+                                          "2 hours ago" ,
+                                          // Jiffy.parse('${newsItem.date}').fromNow()  ,
                                           style: GoogleFonts.montserrat(
                                             fontSize: 14,
                                             color: Colors.grey[600],
@@ -1064,7 +1247,6 @@ class _NewsListScreenState extends State<NewsListScreen> {
                               const SizedBox(width: 10),
 
                               Card(
-
                                 shape: const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.all(
                                     Radius.circular(3),

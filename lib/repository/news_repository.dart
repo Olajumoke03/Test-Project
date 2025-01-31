@@ -50,10 +50,11 @@ class NewsRepository {
   //for top stories
   Future<List<HomeNewsModel>> fetchTopNews() async {
     try {
-      final response = await http.get(Uri.parse('https://punchng.com/wp-json/wp/v2/posts?categories=34'));
+      final response = await http.get(Uri.parse('https://guardian.ng/wp-json/wp/v2/posts?per_page=20&page=1'));
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonData = json.decode(response.body);
+        print("Data data: " + response.body.toString());
         return jsonData.map((json) => HomeNewsModel.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load news: ${response.statusCode}');
