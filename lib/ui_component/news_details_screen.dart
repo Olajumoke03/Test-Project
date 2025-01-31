@@ -210,7 +210,10 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
 
                   Container(
                     child: ClipRRect(
-                      child:CachedNetworkImage(
+                      child: widget.newsModel!.xFeaturedMediaLarge == null ?
+                      Image.asset("assets/images/logo_box.png", height: 250,width: double.infinity,
+                      )
+                     : CachedNetworkImage(
                         imageUrl: widget.newsModel!.xFeaturedMediaLarge!,
                         placeholder: (context, url) => const SizedBox(
                             height: 125,

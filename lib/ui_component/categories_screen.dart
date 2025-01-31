@@ -2,7 +2,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:test_project_github/category_provider.dart';
+import 'package:test_project_github/model/catgegory_model.dart';
+import 'package:test_project_github/model/home_news_model.dart';
 import 'package:test_project_github/ui_component/dummy_news_details.dart';
+import 'package:test_project_github/ui_component/news_by_category.dart';
 import 'package:test_project_github/ui_component/news_details_screen.dart';
 import 'package:test_project_github/ui_component/search_screen.dart';
 
@@ -28,7 +33,22 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   ];
 
   @override
+  void initState() {
+    // Fetch categories when the screen initializes
+    Future.delayed(Duration.zero, () {
+      final categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
+      categoryProvider.loadPreferences(); // Load selected categories from SharedPreferences
+
+      // categoryProvider.fetchCategories();
+    });    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final categoryProvider = Provider.of<CategoryProvider>(context);
+    final categories = categoryProvider.categories;
+
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
@@ -75,24 +95,19 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   // mainAxisSpacing: 0,
                   childAspectRatio: 2.2,
                 ),
-                itemCount: 6,
+                itemCount: categoryProvider.categories.length,
                 itemBuilder: (context, index) {
+                  final categoryItem = categoryProvider.categories[index];
+
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const DummyNewsDetailScreen(
-                            imageUrl: 'https://example.com/image.jpg',
-                            title: 'Monarch population soars 4,900 percent since last year in thrilling 2021 western migration',
-                            author: 'Andy Corbley',
-                            timeAgo: '1hr ago',
-                            comments: 8,
-                            likes: 34,
-                          ),
-                        ),
+                          context,
+                          MaterialPageRoute(builder: (context) => NewsByCategoryScreen(title: categoryItem.categoryName!),
+                          )
                       );
                     },
+
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -106,7 +121,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                             const Text("Entertainment", style: TextStyle(fontSize: 16, color: Color(0XFF373037),
+                              Text(categoryItem.categoryName!, style: const TextStyle(fontSize: 16, color: Color(0XFF373037),
                               ),
                               ),
                               const SizedBox(width: 5.0,),
@@ -126,6 +141,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                       ],
                     ),
                   );
+
+
                 },
               ),
 

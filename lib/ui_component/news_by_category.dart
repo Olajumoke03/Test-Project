@@ -320,7 +320,12 @@ class _NewsByCategoryScreenState extends State<NewsByCategoryScreen> {
                                               elevation: 0,
                                               child: ClipRRect(
                                                 borderRadius: const BorderRadius.all(Radius.circular(3)),
-                                                child: CachedNetworkImage(
+                                                child: newsItem.xFeaturedMediaLarge == null ?
+                                                Image.asset("assets/images/logo_box.png", height: 100,width: 100,
+                                                )
+                                                    :
+
+                                                CachedNetworkImage(
                                                   imageUrl: newsItem.xFeaturedMediaLarge!,
                                                   placeholder: (context, url) => const SizedBox(
                                                       height: 100, width: 100,

@@ -219,8 +219,9 @@ class _HomeNewsScreenState extends State<HomeNewsScreen> with SingleTickerProvid
 
                                           child: ClipRRect(
                                             borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                                            child:
-                                            Image.network(
+                                            child: newsItem.xFeaturedMediaLarge == null ?
+                                            Image.asset("assets/images/logo_box.png", height: 200)
+                                            :Image.network(
                                               newsItem.xFeaturedMediaLarge!,
                                               height: 200,
                                               width: 200,
@@ -591,7 +592,10 @@ class _NewsListScreenState extends State<NewsListScreen> {
                                 elevation: 0,
                                 child: ClipRRect(
                                   borderRadius: const BorderRadius.all(Radius.circular(3)),
-                                  child: CachedNetworkImage(
+                                  child:
+                                  newsItem.xFeaturedMediaLarge == null ?
+                                  Image.asset("assets/images/logo_box.png", height: 100, width: 100,)
+                                      :CachedNetworkImage(
                                     imageUrl: newsItem.xFeaturedMediaLarge!,
                                     placeholder: (context, url) => const SizedBox(
                                         height: 100, width: 100,
