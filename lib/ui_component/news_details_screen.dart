@@ -1,15 +1,22 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_project_github/model/home_news_model.dart';
 import 'package:test_project_github/utility/colors.dart';
 import 'package:test_project_github/utility/font_controller.dart';
 import 'package:test_project_github/utility/text_size_seekbar.dart';
 import 'package:test_project_github/widgets/custom_alert_dialog.dart';
 import 'package:html/parser.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 class NewsDetailScreen extends StatefulWidget {
   final HomeNewsModel? newsModel;
@@ -38,9 +45,60 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
     return document.body?.text ?? '';
   }
 
+  bool isBookmarked = false;
+  void _toggleBookmark(HomeNewsModel news) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      isBookmarked = !isBookmarked;
+    });
+
+    List<String>? bookmarkedNews = prefs.getStringList('bookmarked_news') ?? [];
+
+    if (isBookmarked) {
+      bookmarkedNews.add(json.encode(news));
+      _checkBookmarkStatus();
+    } else {
+      bookmarkedNews.remove(json.encode(news));
+      _checkBookmarkStatus();
+    }
+    prefs.setStringList('bookmarked_news', bookmarkedNews);
+  }
+
+  Future<void> _checkBookmarkStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? bookmarkedNews = prefs.getStringList('bookmarked_news') ?? [];
+    setState(() {
+      isBookmarked = bookmarkedNews.contains(json.encode(widget.newsModel!));
+    });
+  }
+
+
+
+  Future<void> _shareNews() async {
+    try {
+      final String shareText = 'Check out this interesting story on Guardian News:\n'
+          '${widget.newsModel!.title!.rendered}\n\n'
+          'http://guardian.ng/${widget.newsModel!.slug}';
+
+      await Share.share(
+        shareText,
+        subject: widget.newsModel!.title!.rendered,
+      );
+    } catch (e) {
+      debugPrint('Error sharing news: $e');
+    }
+  }
+
+
+
+
   @override
   void initState() {
     _fontSizeController = Provider.of<FontSizeController>(context, listen: false);
+
+    _checkBookmarkStatus();
+
     super.initState();
   }
   @override
@@ -56,13 +114,51 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
               onPressed: () => Navigator.pop(context),
             ),
             actions: [
+
               IconButton(
-                icon:  Icon(Icons.bookmark_border, color: Theme.of(context).textTheme.bodyMedium!.color,),
-                onPressed: () {},
+                icon: Icon(
+                  isBookmarked ?
+                  Icons.bookmark : Icons.bookmark_border,
+                  color: isBookmarked?
+                  mainColor : Theme.of ( context ).iconTheme.color ,
+                ),
+                onPressed: () {
+                  _toggleBookmark(widget.newsModel!);
+                },
               ),
+
               IconButton(
                 icon:  Icon(Icons.share, color: Theme.of(context).textTheme.bodyMedium!.color,),
-                onPressed: () {},
+                onPressed: () async{
+
+                  _shareNews();
+
+                    // try {
+                    //   await Share.share('Test sharing');
+                    // } catch (e) {
+                    //   print('Error share: $e');
+                    // }
+
+                  // FlutterShare.share(
+                  //   title: 'Guardian News' ,
+                  //   text: '${widget.newsModel!.title!.rendered}'
+                  //       .replaceAll (r"\n" , "\n" ).replaceAll ( r"\r" , "" )
+                  //       .replaceAll ( r"\'" , "'" ).replaceAll ( "<p>" , "" )
+                  //       .replaceAll ("&#8217;" , "'" ).replaceAll ("&#038;" , "&" )
+                  //       .replaceAll ("&#8216;" , "‘" ).replaceAll("&#8211;", "-"),
+                  //   linkUrl:'https://guardian.ng/' '${widget.newsModel!.slug} ',
+                  //   // chooserTitle: 'Something for chooser title',
+                  // );
+
+                  // Share.share(
+                  //     'Read: ${widget.newsModel!.slug} on Guardian News',
+                  //     subject: '${widget.newsModel!.title!.rendered}'.replaceAll (r"\n" , "\n" ).replaceAll ( r"\r" , "" )
+                  //         .replaceAll ( r"\'" , "'" ).replaceAll ( "<p>" , "" )
+                  //         .replaceAll ("&#8217;" , "'" ).replaceAll ("&#038;" , "&" )
+                  //         .replaceAll ("&#8216;" , "‘" ).replaceAll("&#8211;", "-"),
+                  //
+                  // );
+                },
               ),
             ],
           ),
@@ -102,7 +198,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
 
                       Text(_parseHtmlString(widget.newsModel!.title!.rendered),
                       style: GoogleFonts.merriweather(
-                        fontSize: 30,
+                        fontSize: 28,
                         fontWeight: FontWeight.w600,
                         color:Theme.of(context).textTheme.bodyLarge!.color,
                       ),

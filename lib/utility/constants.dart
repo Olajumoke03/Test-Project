@@ -20,11 +20,11 @@ const String moreSearchResult ="search?per_page=20&search=&page=";
 
 const String privacyPolicy ="${baseUrl}pages/778714";
 const String aboutUs ="${baseUrl}pages/164902";
-const String categoryList ="https://punchng.com/category-payload/?v2";
+// const String categoryList ="https://punchng.com/category-payload/?v2";
 
 const String featuredNews ="${baseUrl}posts?categories=";
 
-const String liveVideo ="https://punchng.com/mobile-app-streaming/";
+const String liveVideo ="https://.com/mobile-app-streaming/";
 
 const String netCoreUrl ="https://api.netcoresmartech.com/apiv2?type=contact&activity=add&apikey=28b46bfdfd06f61d3a5b1d266e0b30d8";
 

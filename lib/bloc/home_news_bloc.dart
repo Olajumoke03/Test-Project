@@ -84,8 +84,11 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   }
 
   Future<List<HomeNewsModel>> _fetchNewsForCategory(String categoryId) async {
-    final url = Uri.parse('https://punchng.com/wp-json/wp/v2/posts?categories=$categoryId&per_page=40');
+    // final url = Uri.parse('https://punchng.com/wp-json/wp/v2/posts?categories=$categoryId&per_page=40');
+    final url = Uri.parse('https://guardian.ng/wp-json/wp/v2/posts?categories=8&per_page=40');
+
     print('Fetching news from: $url');
+
 
     try {
       final response = await http.get(url);

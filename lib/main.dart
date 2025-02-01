@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_project_github/bloc/featured_news_bloc.dart';
 import 'package:test_project_github/bloc/home_news_bloc.dart';
@@ -18,6 +19,10 @@ import 'package:test_project_github/utility/font_controller.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();  // Add this line
   await SharedPreferences.getInstance();
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    Share.share('');
+  });
   runApp(MyApp());
 }
 
