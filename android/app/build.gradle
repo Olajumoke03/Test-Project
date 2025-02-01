@@ -36,12 +36,6 @@ android {
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.debug
         }
-        debug {
-            ndk {
-                // Add this to filter out the gralloc4 messages
-                manifestPlaceholders = [filterLogTag: "gralloc4"]
-            }
-        }
     }
 }
 
